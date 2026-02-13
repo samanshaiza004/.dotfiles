@@ -1,0 +1,42 @@
+# ~/.config/sesh/sesh.toml
+
+# Default session settings
+[session_defaults]
+startup_path = "~"
+default_window_name = "main"
+naming_strategy = "basename"
+
+# Custom session entries
+[[session]]
+name = "fish"
+path = "~/.config/fish"
+
+[[session]]
+name = "labwc"
+path = "~/.config/labwc"
+
+[[session]]
+name = "tmux"
+path = "~/.config/tmux"
+
+[[session]]
+name = "sesh"
+path = "~/.config/sesh"
+
+# Optional find settings
+[find]
+max_depth = 3
+exclude = [
+    ".git",
+    "node_modules",
+    ".cache",
+    ".npm",
+    ".cargo",
+    "target",
+    "dist",
+    "build",
+]
+search_paths = [
+    "~",
+]
+
