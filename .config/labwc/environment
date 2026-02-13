@@ -1,0 +1,6 @@
+# Set your main monitor to 165Hz
+# Replace DP-1 with your actual output name from wlr-randr
+wlr-randr --output DP-1 --mode 2560x1440@165Hz --pos 0,0
+
+# If you have multiple monitors:
+wlr-randr --output HDMI-A-1 --mode 1920x1080@60Hz --pos 2560,0

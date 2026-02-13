@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<labwc_config>
+  <!-- Main monitor - AORUS at 165Hz -->
+  <output name="DP-1">
+    <mode>
+      <width>2560</width>
+      <height>1440</height>
+      <refresh>164999</refresh> <!-- 164.998993 Hz in mHz -->
+    </mode>
+    <position>
+      <x>0</x>
+      <y>0</y>
+    </position>
+    <scale>1.0</scale>
+  </output>
+
+  <!-- Secondary monitor - Sceptre -->
+  <output name="HDMI-A-1">
+    <mode>
+      <width>1920</width>
+      <height>1080</height>
+      <refresh>60000</refresh>
+    </mode>
+    <position>
+      <x>2560</x>
+      <y>0</y>
+    </position>
+    <scale>1.0</scale>
+  </output>
+</labwc_config>

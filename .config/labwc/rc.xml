@@ -1,0 +1,227 @@
+<!--
+  This is a very simple config file with many options missing. For a complete
+  set of options with comments, see docs/rc.xml.all
+-->
+
+<labwc_config>
+
+  <!-- Theme Configuration -->
+  <theme>
+    <name>Clearlooks-3.4</name>
+    <cornerRadius>0</cornerRadius>
+    <font name="sans" size="10" />
+  </theme>
+
+  <!-- Window Switcher Configuration -->
+  <windowSwitcher preview="yes" outlines="yes">
+    <osd show="yes" style="classic" output="all" thumbnailLabelFormat="%T" />
+    <fields>
+      <field content="icon" width="5%" />
+      <field content="desktop_entry_name" width="30%" />
+      <field content="title" width="65%" />
+    </fields>
+  </windowSwitcher>
+
+  <!-- Desktop/Workspace Configuration -->
+  <desktops>
+    <popupTime>500</popupTime>
+    <names>
+      <name>1</name>
+      <name>2</name>
+      <name>3</name>
+      <name>4</name>
+    </names>
+  </desktops>
+
+  <!-- Window Rules -->
+  <windowRules>
+    <!-- Remove title bar from wezterm -->
+    <windowRule identifier="org.wezfurlong.wezterm">
+      <serverDecoration>no</serverDecoration>
+    </windowRule>
+    
+    <!-- You can add more window-specific rules here -->
+    <!-- Example: Make certain apps always open on specific workspaces
+    <windowRule identifier="firefox">
+      <action name="MoveToDesktop" to="2" />
+    </windowRule>
+    -->
+  </windowRules>
+ 
+  
+  <desktops>
+	  <popupTime>500</popupTime>
+	  <names>
+		  <name>1</name>
+		  <name>2</name>
+		  <name>3</name>
+		  <name>4</name>
+	  </names>
+  </desktops>
+  <keyboard>
+    <!-- Load default labwc keybinds first -->
+    <default />
+
+    <!-- ========== APPLICATION LAUNCHERS ========== -->
+    
+    <!-- Terminal -->
+    <keybind key="W-Return">
+      <action name="Execute" command="wezterm" />
+    </keybind>
+
+    <!-- Browser -->
+    <keybind key="W-b">
+      <action name="Execute" command="qutebrowser" />
+    </keybind>
+
+    <!-- Application Launcher -->
+    <keybind key="W-p">
+      <action name="Execute" command="fuzzel" />
+    </keybind>
+    
+
+    <!-- File Manager -->
+    <keybind key="W-e">
+      <action name="Execute" command="nemo" />
+    </keybind>
+
+    <!-- ========== WINDOW MANAGEMENT ========== -->
+    
+    <!-- Close window -->
+    <keybind key="W-c">
+      <action name="Close" />
+    </keybind> 
+
+    <!-- Toggle maximize -->
+    <keybind key="W-m">
+      <action name="ToggleMaximize" />
+    </keybind>
+
+    <!-- Window switching -->
+    <keybind key="W-Tab">
+      <action name="NextWindow" />
+    </keybind>
+
+    <keybind key="W-S-Tab">
+      <action name="PreviousWindow" />
+    </keybind>
+
+    <keybind key="A-Tab">
+      <action name="NextWindow" />
+    </keybind>
+
+    <keybind key="A-S-Tab">
+      <action name="PreviousWindow" />
+    </keybind>
+
+    <!-- ========== WINDOW SNAPPING/TILING ========== -->
+    
+    <!-- Snap to edges -->
+    <keybind key="W-Left">
+      <action name="SnapToEdge" direction="left" />
+    </keybind>
+
+    <keybind key="W-Right">
+      <action name="SnapToEdge" direction="right" />
+    </keybind>
+
+    <keybind key="W-Up">
+      <action name="SnapToEdge" direction="up" />
+    </keybind>
+
+    <keybind key="W-Down">
+      <action name="SnapToEdge" direction="down" />
+    </keybind>
+
+    <!-- ========== WORKSPACE/DESKTOP SWITCHING ========== -->
+    
+    <!-- Go to desktop -->
+    <keybind key="W-1">
+      <action name="GoToDesktop" to="1" />
+    </keybind>
+
+    <keybind key="W-2">
+      <action name="GoToDesktop" to="2" />
+    </keybind>
+
+    <keybind key="W-3">
+      <action name="GoToDesktop" to="3" />
+    </keybind>
+
+    <keybind key="W-4">
+      <action name="GoToDesktop" to="4" />
+    </keybind>
+
+    <!-- Move window to desktop -->
+    <keybind key="W-S-1">
+      <action name="SendToDesktop" to="1" follow="no" />
+    </keybind>
+
+    <keybind key="W-S-2">
+      <action name="SendToDesktop" to="2" follow="no" />
+    </keybind>
+
+    <keybind key="W-S-3">
+      <action name="SendToDesktop" to="3" follow="no" />
+    </keybind>
+
+    <keybind key="W-S-4">
+      <action name="SendToDesktop" to="4" follow="no" />
+    </keybind>
+
+    <!-- Move window to desktop AND follow -->
+    <keybind key="W-C-1">
+      <action name="SendToDesktop" to="1" follow="yes" />
+    </keybind>
+
+    <keybind key="W-C-2">
+      <action name="SendToDesktop" to="2" follow="yes" />
+    </keybind>
+
+    <keybind key="W-C-3">
+      <action name="SendToDesktop" to="3" follow="yes" />
+    </keybind>
+
+    <keybind key="W-C-4">
+      <action name="SendToDesktop" to="4" follow="yes" />
+    </keybind>
+
+    <!-- ========== SCREENSHOTS ========== -->
+    
+    <!-- Full screenshot -->
+    <keybind key="Print">
+      <action name="Execute" command="grim ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png" />
+    </keybind>
+
+    <!-- Area selection screenshot -->
+    <keybind key="S-Print">
+      <action name="Execute" command="grim -g &quot;$(slurp)&quot; ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png" />
+    </keybind>
+
+    <!-- ========== SYSTEM/SESSION ========== -->
+    
+    <!-- Show labwc menu -->
+    <keybind key="W-space">
+      <action name="ShowMenu" menu="root-menu" />
+    </keybind>
+
+
+    <!-- Reconfigure labwc -->
+    <keybind key="W-S-r">
+      <action name="Reconfigure" />
+    </keybind>
+
+   
+
+  </keyboard>
+  <mouse>
+    <default />
+    <!-- Show a custom menu on desktop right click -->
+    <context name="Root">
+      <mousebind button="Right" action="Press">
+        <action name="ShowMenu" menu="some-custom-menu" />
+      </mousebind>
+    </context>
+  </mouse>
+
+</labwc_config>
