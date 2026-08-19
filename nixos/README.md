@@ -17,9 +17,12 @@ nixos/
 │   └── saman/
 │       └── home.nix             # Home Manager config (mango, imports)
 ├── modules/
-│   ├── nixos/                   # system-level modules
-│   │   └── mango.nix            # compositor + home-manager wiring
-│   └── home/                    # per-program home modules
+│   ├── nixos/                  # system-level modules (one concern each)
+│   │   ├── mango.nix           # compositor enable/package
+│   │   ├── home-manager.nix    # HM wiring for saman
+│   │   └── networking.nix      # hostname, NetworkManager, firewall
+│   └── home/                   # per-program home modules
+│       ├── mango.nix           # mango settings, bindings, monitor rules
 │       └── ghostty.nix
 └── README.md
 ```
