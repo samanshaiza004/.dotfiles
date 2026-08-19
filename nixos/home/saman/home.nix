@@ -8,6 +8,7 @@
   imports = [
     ../../modules/home/mango.nix
     ../../modules/home/ghostty.nix
+    ../../modules/home/quickshell/quickshell.nix
   ];
 
   # programs.ghostty (in modules/home/ghostty.nix) adds ghostty itself.

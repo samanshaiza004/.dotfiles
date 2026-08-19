@@ -18,6 +18,8 @@
       # Add autostart commands here, e.g.:
       #   waybar &
       #   dunst &
+      # Bottom panel
+      quickshell &
     '';
 
     settings = {
