@@ -14,5 +14,6 @@
   # programs.ghostty (in modules/home/ghostty.nix) adds ghostty itself.
   home.packages = with pkgs; [
     firefox
+    opencode
   ];
 }
