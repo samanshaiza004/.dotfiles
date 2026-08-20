@@ -3,7 +3,7 @@ import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 
-// Bottom panel on the primary (largest) screen.
+// Top panel on the primary (largest) screen.
 PanelWindow {
   id: root
 
@@ -12,7 +12,7 @@ PanelWindow {
   anchors {
     left: true
     right: true
-    bottom: true
+    top: true
   }
   implicitHeight: 32
   exclusiveZone: 32
@@ -28,9 +28,9 @@ PanelWindow {
     return best
   }
 
-  // 1px accent line on top edge
+  // 1px accent line on bottom edge
   Rectangle {
-    anchors { top: parent.top; left: parent.left; right: parent.right }
+    anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
     height: 1
     color: "#c9b890"
     opacity: 0.35

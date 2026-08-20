@@ -88,7 +88,7 @@
       default_nmaster = 1;
       new_is_master = 1;
       smartgaps = 0;
-      tag_num = 9;
+      tag_num = 3;
 
       # --- Dwindle ---
       dwindle_drop_simple_split = 1;
@@ -145,8 +145,8 @@
       focuscolor = "0xc9b890ff";
       gappih = 5;
       gappiv = 5;
-      gappoh = 10;
-      gappov = 10;
+      gappoh = 5;
+      gappov = 5;
       globalcolor = "0xb153a7ff";
       maximizescreencolor = "0x89aa61ff";
       overlaycolor = "0x14a57cff";
@@ -170,12 +170,12 @@
         "name:^HDMI-A-1$,width:1920,height:1080,x:2560,y:0,scale:1"
       ];
 
-      # --- Key bindings (stock mango defaults) ---
+      # --- Key bindings ---
       bind = [
         "SUPER,r,reload_config"
-        "Alt,space,spawn,fuzzel"
+        "Alt,u,spawn,fuzzel"
         "SUPER,Return,spawn,ghostty"
-        "ALT,c,killclient"
+        "SUPER,c,killclient"
         "SUPER,Tab,focusstack,next"
         "ALT,Left,focusdir,left"
         "ALT,Right,focusdir,right"
@@ -204,29 +204,15 @@
         "alt+shift,Return,dwindle_toggle_split_direction"
         "SUPER,n,switch_layout"
         "SUPER,Left,viewtoleft,0"
-        "CTRL,Left,viewtoleft_have_client,0"
         "SUPER,Right,viewtoright,0"
-        "CTRL,Right,viewtoright_have_client,0"
         "CTRL+SUPER,Left,tagtoleft,0"
         "CTRL+SUPER,Right,tagtoright,0"
         "Ctrl,1,view,1,0"
         "Ctrl,2,view,2,0"
         "Ctrl,3,view,3,0"
-        "Ctrl,4,view,4,0"
-        "Ctrl,5,view,5,0"
-        "Ctrl,6,view,6,0"
-        "Ctrl,7,view,7,0"
-        "Ctrl,8,view,8,0"
-        "Ctrl,9,view,9,0"
         "Alt,1,tag,1,0"
         "Alt,2,tag,2,0"
         "Alt,3,tag,3,0"
-        "Alt,4,tag,4,0"
-        "Alt,5,tag,5,0"
-        "Alt,6,tag,6,0"
-        "Alt,7,tag,7,0"
-        "Alt,8,tag,8,0"
-        "Alt,9,tag,9,0"
         "alt+shift,Left,focusmon,left"
         "alt+shift,Right,focusmon,right"
         "SUPER+Alt,Left,tagmon,left"
@@ -234,8 +220,6 @@
         "ALT+SHIFT,X,incgaps,1"
         "ALT+SHIFT,Z,incgaps,-1"
         "ALT+SHIFT,R,togglegaps"
-        "CTRL+SHIFT,Up,movewin,+0,-50"
-        "CTRL+SHIFT,Down,movewin,+0,+50"
         "CTRL+SHIFT,Left,movewin,-50,+0"
         "CTRL+SHIFT,Right,movewin,+50,+0"
         "CTRL+ALT,Up,resizewin,+0,-50"
@@ -246,7 +230,6 @@
 
       mousebind = [
         "SUPER,btn_left,moveresize,curmove"
-        "NONE,btn_middle,togglemaximizescreen,0"
         "SUPER,btn_right,moveresize,curresize"
       ];
 
