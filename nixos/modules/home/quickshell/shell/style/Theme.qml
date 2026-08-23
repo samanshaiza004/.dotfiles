@@ -62,9 +62,8 @@ QtObject {
   // Wallpaper colorization is intentionally separate from selection/control
   // semantics. It may tint glass and soften the focus glow, but never replaces
   // the fixed Oxygen blue used for selected controls.
-  readonly property color colorization: Services.ColorService.primary
-  readonly property color colorizationTint: root.alpha(colorization, 0.08)
-  readonly property color focusGlow: root.mix(accent, colorization, 0.25)
+  readonly property color wallpaperAccent: Services.ColorService.sourceColor
+  readonly property color focusGlow: root.mix(accent, wallpaperAccent, 0.30)
 
   // ---- Urgent ----------------------------------------------------------
   readonly property color urgent: "#C05B3C"
@@ -72,7 +71,7 @@ QtObject {
   readonly property color urgentDeep: "#3A2018"
 
   // ---- Panel glass ------------------------------------------------------
-  readonly property color panelGradTop: colorizationTint
+  readonly property color panelGradTop: root.alpha(root.mix(graphiteLight, wallpaperAccent, 0.22), 0.55)
   readonly property color panelGradBottom: "#D9151619"
   readonly property color panelTopHighlight: "#2EFFFFFF"
   readonly property color panelBottomEdge: "#FF0A0A0C"
@@ -85,7 +84,7 @@ QtObject {
   readonly property color surfaceTopHighlight: "#38FFFFFF"
   readonly property color surfaceBottomShadow: "#3A000000"
   readonly property color surfaceShadow: "#000000"
-  readonly property color startSurfaceGradTop: root.alpha(colorization, 0.08)
+  readonly property color startSurfaceGradTop: root.alpha(root.mix(steelLight, wallpaperAccent, 0.20), 0.82)
 
   // ---- Light variant ------------------------------------------------------
   readonly property color lightSurfaceGradTop: "#F4ECECEF"

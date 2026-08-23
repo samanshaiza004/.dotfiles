@@ -1,6 +1,8 @@
 { config, pkgs, inputs, ... }:
 
 let
+  ghosttyPaletteGenerator = pkgs.callPackage ./matugen/ghostty-palette-generator.nix { };
+
   wallpaperSet = pkgs.writeShellApplication {
     name = "wallpaper-set";
     runtimeInputs = with pkgs; [
@@ -8,6 +10,7 @@ let
       matugen
       procps
       swaybg
+      ghosttyPaletteGenerator
     ];
     text = ''
       set -euo pipefail
@@ -20,16 +23,17 @@ let
 
       mkdir -p "$HOME/.cache/matugen" "$HOME/.config/quickshell/generated"
       matugen image --quiet "$wallpaper"
+      ghostty-palette-generator "$wallpaper"
 
       pkill -x swaybg 2>/dev/null || true
       swaybg -i "$wallpaper" -m fill &
 
-      systemctl --user reload app-com.mitchellh.ghostty.service 2>/dev/null || true
+      timeout 5s systemctl --user reload app-com.mitchellh.ghostty.service 2>/dev/null || true
     '';
   };
 in
 {
-  home.packages = [ wallpaperSet ];
+  home.packages = [ wallpaperSet ghosttyPaletteGenerator ];
 
   imports = [
     inputs.mango.hmModules.mango
