@@ -176,7 +176,7 @@
       # --- Key bindings ---
       bind = [
         "SUPER,r,reload_config"
-        "Alt,u,spawn,fuzzel"
+        "Alt,u,spawn,qs ipc call launcher toggle"
         "SUPER,Return,spawn,ghostty"
         "SUPER+SHIFT,S,spawn_shell,grim -g \"$(slurp)\" - | wl-copy"
         "SUPER,c,killclient"

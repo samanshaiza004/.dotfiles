@@ -4,6 +4,7 @@
 import Quickshell
 import QtQml
 import "components"
+import "launcher"
 import "panel"
 import "services"
 
@@ -37,6 +38,12 @@ ShellRoot {
   PopupController {
     id: popupController
     panelWindow: panelBar
+  }
+
+  Launcher {
+    id: launcher
+    panelWindow: panelBar
+    popupController: popupController
   }
 
   PanelBar {
