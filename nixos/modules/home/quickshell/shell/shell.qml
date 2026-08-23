@@ -35,15 +35,21 @@ ShellRoot {
     id: windowService
   }
 
+  AppCatalog {
+    id: appCatalog
+  }
+
   PopupController {
     id: popupController
     panelWindow: panelBar
   }
 
-  Launcher {
+  StartMenu {
     id: launcher
     panelWindow: panelBar
     popupController: popupController
+    appCatalog: appCatalog
+    startButton: panelBar.launcherButton
   }
 
   PanelBar {
@@ -54,5 +60,6 @@ ShellRoot {
     calendarModel: calendarModel
     windowService: windowService
     popupController: popupController
+    launcher: launcher
   }
 }

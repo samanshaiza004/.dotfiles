@@ -1,4 +1,5 @@
 import QtQuick
+import "../generated" as Palette
 
 // Central visual vocabulary for the shell: one source of truth for the
 // palette and the few dimensions that define the "late-2000s" grammar.
@@ -20,89 +21,93 @@ QtObject {
   readonly property int popupOpenDuration: 400
   readonly property int popupCloseDuration: 300
 
+  function alpha(color, opacity) {
+    return Qt.rgba(color.r, color.g, color.b, opacity)
+  }
+
   // ---- Text -----------------------------------------------------------
-  readonly property color textPrimary: "#E9E6DF"
-  readonly property color textSecondary: "#B8B3A9"
-  readonly property color textMuted: "#8A857B"
-  readonly property color textFaint: "#66615A"
-  readonly property color textOnActive: "#EFF4F9"
-  readonly property color textOnUrgent: "#F2B49C"
-  readonly property color textOnTrack: "#DCE4EC"
-  readonly property color calendarWeekday: "#C9CBC9"
-  readonly property color calendarDate: "#D4D3CE"
+  readonly property color textPrimary: Palette.MatugenColors.surfaceText
+  readonly property color textSecondary: Palette.MatugenColors.surfaceVariantText
+  readonly property color textMuted: Palette.MatugenColors.outline
+  readonly property color textFaint: Palette.MatugenColors.outlineVariant
+  readonly property color textOnActive: Palette.MatugenColors.primaryText
+  readonly property color textOnUrgent: Palette.MatugenColors.errorText
+  readonly property color textOnTrack: Palette.MatugenColors.surfaceVariantText
+  readonly property color calendarWeekday: Palette.MatugenColors.surfaceVariantText
+  readonly property color calendarDate: Palette.MatugenColors.surfaceText
 
   // ---- Graphite / smoke surfaces --------------------------------------
-  readonly property color graphiteDeep: "#121315"
-  readonly property color graphite: "#1C1D20"
-  readonly property color graphiteLight: "#26272B"
-  readonly property color steel: "#33343A"
-  readonly property color steelLight: "#3D3F46"
+  readonly property color graphiteDeep: Palette.MatugenColors.surfaceContainerLowest
+  readonly property color graphite: Palette.MatugenColors.surfaceContainerLow
+  readonly property color graphiteLight: Palette.MatugenColors.surfaceContainer
+  readonly property color steel: Palette.MatugenColors.surfaceContainerHigh
+  readonly property color steelLight: Palette.MatugenColors.surfaceContainerHighest
 
   // ---- Muted blue-gray accent (active/focused) -------------------------
-  readonly property color accent: "#6E93C4"
-  readonly property color accentBright: "#9CB7DB"
-  readonly property color accentDeep: "#33506E"
-  readonly property color accentDim: "#42536B"
+  readonly property color accent: Palette.MatugenColors.primary
+  readonly property color accentBright: Palette.MatugenColors.primaryFixed
+  readonly property color accentDeep: Palette.MatugenColors.primaryContainer
+  readonly property color accentDim: Palette.MatugenColors.secondaryContainer
 
   // ---- Urgent ----------------------------------------------------------
-  readonly property color urgent: "#C05B3C"
-  readonly property color urgentBright: "#E07A55"
-  readonly property color urgentDeep: "#3A2018"
+  readonly property color urgent: Palette.MatugenColors.error
+  readonly property color urgentBright: Palette.MatugenColors.error
+  readonly property color urgentDeep: Palette.MatugenColors.errorContainer
 
   // ---- Panel glass ------------------------------------------------------
-  readonly property color panelGradTop: "#603B3C42"
-  readonly property color panelGradBottom: "#D9151619"
-  readonly property color panelTopHighlight: "#2EFFFFFF"
-  readonly property color panelBottomEdge: "#FF0A0A0C"
+  readonly property color panelGradTop: root.alpha(Palette.MatugenColors.surfaceContainerHigh, 0.26)
+  readonly property color panelGradBottom: root.alpha(Palette.MatugenColors.surface, 0.84)
+  readonly property color panelTopHighlight: root.alpha(Palette.MatugenColors.surfaceText, 0.18)
+  readonly property color panelBottomEdge: root.alpha(Palette.MatugenColors.surfaceContainerLowest, 0.95)
   readonly property color panelBottomShadow: "#33000000"
 
   // ---- Generic surface (popups, menus) ----------------------------------
-  readonly property color surfaceGradTop: "#8C4A4B52"
-  readonly property color surfaceGradBottom: "#E616171A"
-  readonly property color surfaceBorder: "#FF0A0A0C"
-  readonly property color surfaceTopHighlight: "#38FFFFFF"
+  readonly property color surfaceGradTop: root.alpha(Palette.MatugenColors.surfaceContainerHigh, 0.55)
+  readonly property color surfaceGradBottom: root.alpha(Palette.MatugenColors.surface, 0.9)
+  readonly property color surfaceBorder: root.alpha(Palette.MatugenColors.outline, 0.4)
+  readonly property color surfaceTopHighlight: root.alpha(Palette.MatugenColors.surfaceText, 0.22)
   readonly property color surfaceBottomShadow: "#3A000000"
   readonly property color surfaceShadow: "#000000"
 
   // ---- Light variant ------------------------------------------------------
-  readonly property color lightSurfaceGradTop: "#F4ECECEF"
-  readonly property color lightSurfaceGradBottom: "#D8BCBCA0"
-  readonly property color lightSurfaceBorder: "#FF58585E"
-  readonly property color lightSurfaceTopHighlight: "#40FFFFFF"
+  readonly property color lightSurfaceGradTop: Palette.MatugenColors.surfaceBright
+  readonly property color lightSurfaceGradBottom: Palette.MatugenColors.surfaceContainerHigh
+  readonly property color lightSurfaceBorder: Palette.MatugenColors.outline
+  readonly property color lightSurfaceTopHighlight: root.alpha(Palette.MatugenColors.surfaceText, 0.25)
   readonly property color lightSurfaceBottomShadow: "#2E101010"
 
   // ---- Buttons ----------------------------------------------------------
-  readonly property color buttonGradTop: "#E6474850"
-  readonly property color buttonGradBottom: "#E6292A2F"
-  readonly property color buttonBorder: "#FF09090B"
-  readonly property color buttonTopHighlight: "#30FFFFFF"
+  readonly property color buttonGradTop: root.alpha(Palette.MatugenColors.surfaceContainerHighest, 0.9)
+  readonly property color buttonGradBottom: root.alpha(Palette.MatugenColors.surfaceContainerHigh, 0.9)
+  readonly property color buttonBorder: root.alpha(Palette.MatugenColors.outline, 0.55)
+  readonly property color buttonTopHighlight: root.alpha(Palette.MatugenColors.surfaceText, 0.19)
   readonly property color buttonBottomShadow: "#26000000"
 
-  readonly property color buttonHoverGradTop: "#E6585A65"
-  readonly property color buttonHoverGradBottom: "#E633353C"
-  readonly property color buttonHoverTopHighlight: "#3CFFFFFF"
+  readonly property color buttonHoverGradTop: root.alpha(Palette.MatugenColors.primaryContainer, 0.9)
+  readonly property color buttonHoverGradBottom: root.alpha(Palette.MatugenColors.surfaceContainerHigh, 0.9)
+  readonly property color buttonHoverTopHighlight: root.alpha(Palette.MatugenColors.primaryText, 0.24)
   readonly property color buttonHoverBottomShadow: "#2E000000"
 
-  readonly property color buttonPressedGradTop: "#E6232428"
-  readonly property color buttonPressedGradBottom: "#E631333A"
-  readonly property color buttonPressedBorder: "#FF050506"
-  readonly property color buttonPressedTopHighlight: "#0DFFFFFF"
+  readonly property color buttonPressedGradTop: root.alpha(Palette.MatugenColors.surfaceContainerLow, 0.95)
+  readonly property color buttonPressedGradBottom: root.alpha(Palette.MatugenColors.surfaceContainerLowest, 0.95)
+  readonly property color buttonPressedBorder: root.alpha(Palette.MatugenColors.outline, 0.7)
+  readonly property color buttonPressedTopHighlight: root.alpha(Palette.MatugenColors.surfaceText, 0.05)
   readonly property color buttonPressedBottomShadow: "#4D000000"
 
-  readonly property color buttonActiveGradTop: "#E65A6E8A"
-  readonly property color buttonActiveGradBottom: "#E8364460"
-  readonly property color buttonActiveBorder: "#FF0A0A0C"
-  readonly property color buttonActiveTopHighlight: "#4AFFFFFF"
+  readonly property color buttonActiveGradTop: root.alpha(Palette.MatugenColors.primary, 0.9)
+  readonly property color buttonActiveGradBottom: root.alpha(Palette.MatugenColors.primaryContainer, 0.9)
+  readonly property color buttonActiveBorder: root.alpha(Palette.MatugenColors.outline, 0.55)
+  readonly property color buttonActiveTopHighlight: root.alpha(Palette.MatugenColors.primaryText, 0.29)
   readonly property color buttonActiveBottomShadow: "#30000000"
-  readonly property color buttonActiveInnerEdge: "#B49CB7DB"
-  readonly property color buttonActiveGlow: "#6E93C4"
+  readonly property color buttonActiveInnerEdge: root.alpha(Palette.MatugenColors.primaryFixed, 0.7)
+  readonly property color buttonActiveGlow: Palette.MatugenColors.primary
 
-  readonly property color buttonUrgentGradTop: "#E65A362A"
-  readonly property color buttonUrgentGradBottom: "#E8392118"
-  readonly property color buttonUrgentBorder: "#FF0A0A0C"
-  readonly property color buttonUrgentTopHighlight: "#4AF2B49C"
-  readonly property color buttonUrgentInnerEdge: "#B4E07A55"
-  readonly property color buttonUrgentGlow: "#C05B3C"
+  readonly property color buttonUrgentGradTop: root.alpha(Palette.MatugenColors.error, 0.9)
+  readonly property color buttonUrgentGradBottom: root.alpha(Palette.MatugenColors.errorContainer, 0.9)
+  readonly property color buttonUrgentBorder: root.alpha(Palette.MatugenColors.outline, 0.55)
+  readonly property color buttonUrgentTopHighlight: root.alpha(Palette.MatugenColors.errorText, 0.29)
+  readonly property color buttonUrgentInnerEdge: root.alpha(Palette.MatugenColors.error, 0.7)
+  readonly property color buttonUrgentGlow: Palette.MatugenColors.error
 
   readonly property color buttonDisabledGradTop: "#A61E1F23"
   readonly property color buttonDisabledGradBottom: "#A618191C"
@@ -113,19 +118,19 @@ QtObject {
   readonly property color trackBorder: "#FF070708"
   readonly property color trackTopShadow: "#40000000"
   readonly property color trackInnerTop: "#14FFFFFF"
-  readonly property color fillGradTop: "#F08FB4D9"
-  readonly property color fillGradBottom: "#E84A7095"
-  readonly property color fillTopHighlight: "#5CFFFFFF"
-  readonly property color fillLeadingEdge: "#FFC7D9EC"
-  readonly property color fillGlow: "#6E93C4"
+  readonly property color fillGradTop: root.alpha(Palette.MatugenColors.primary, 0.94)
+  readonly property color fillGradBottom: root.alpha(Palette.MatugenColors.primaryContainer, 0.94)
+  readonly property color fillTopHighlight: root.alpha(Palette.MatugenColors.primaryText, 0.36)
+  readonly property color fillLeadingEdge: Palette.MatugenColors.primaryFixed
+  readonly property color fillGlow: Palette.MatugenColors.primary
 
   // ---- Tooltip -----------------------------------------------------------
-  readonly property color tooltipBase: "#F4F1EB"
-  readonly property color tooltipBorder: "#FF1A1A1C"
-  readonly property color tooltipText: "#1A1A1C"
+  readonly property color tooltipBase: Palette.MatugenColors.surfaceBright
+  readonly property color tooltipBorder: Palette.MatugenColors.outline
+  readonly property color tooltipText: Palette.MatugenColors.surfaceText
   readonly property color tooltipShadow: "#40000000"
   readonly property int tooltipRadius: 2
 
   // ---- Focused app title -------------------------------------------------
-  readonly property color focusedAppText: "#C9C4BA"
+  readonly property color focusedAppText: Palette.MatugenColors.surfaceVariantText
 }

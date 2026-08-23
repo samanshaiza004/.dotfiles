@@ -25,9 +25,39 @@ in
     kdePackages.oxygen-icons
   ];
 
-  # shell.qml + widgets live in ./shell; becomes ~/.config/quickshell.
-  xdg.configFile."quickshell" = {
-    source = ./shell;
-    recursive = true;
+  # Keep the config root writable so Matugen can place its generated palette
+  # beside the managed QML directories.
+  xdg.configFile = {
+    "quickshell/shell.qml".source = ./shell/shell.qml;
+    "quickshell/MangoBackend.qml".source = ./shell/MangoBackend.qml;
+    "quickshell/WatchStream.qml".source = ./shell/WatchStream.qml;
+    "quickshell/components" = {
+      source = ./shell/components;
+      recursive = true;
+    };
+    "quickshell/launcher" = {
+      source = ./shell/launcher;
+      recursive = true;
+    };
+    "quickshell/menus" = {
+      source = ./shell/menus;
+      recursive = true;
+    };
+    "quickshell/panel" = {
+      source = ./shell/panel;
+      recursive = true;
+    };
+    "quickshell/services" = {
+      source = ./shell/services;
+      recursive = true;
+    };
+    "quickshell/style" = {
+      source = ./shell/style;
+      recursive = true;
+    };
+    "quickshell/taskbar" = {
+      source = ./shell/taskbar;
+      recursive = true;
+    };
   };
 }

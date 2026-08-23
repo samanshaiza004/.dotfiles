@@ -26,6 +26,7 @@ PanelWindow {
   required property var calendarModel
   required property var windowService
   required property var popupController
+  required property var launcher
 
   WlrLayershell.namespace: "late2000s-panel"
 
@@ -49,8 +50,11 @@ PanelWindow {
   }
 
   function closePopups() {
+    if (root.launcher && root.launcher.visible) root.launcher.closeImmediately()
     root.popupController.closeAll()
   }
+
+  readonly property alias launcherButton: startButton
 
   // Classic desktop tooltip, shared by every control in the panel.
   Tooltip {
@@ -85,6 +89,12 @@ PanelWindow {
     }
     spacing: 10
     z: 1
+
+    StartButton {
+      id: startButton
+      launcher: root.launcher
+      tooltip: tooltip
+    }
 
     TagsWidget {
       id: tagsWidget

@@ -1,6 +1,43 @@
 { config, pkgs, inputs, ... }:
 
+let
+  wallpaperSet = pkgs.writeShellApplication {
+    name = "wallpaper-set";
+    runtimeInputs = with pkgs; [
+      gnugrep
+      matugen
+      procps
+      swaybg
+    ];
+    text = ''
+      set -euo pipefail
+
+      wallpaper="''${1:?Usage: wallpaper-set IMAGE}"
+      if [ ! -f "$wallpaper" ]; then
+        printf 'wallpaper-set: image not found: %s\n' "$wallpaper" >&2
+        exit 1
+      fi
+
+      if command -v quickshell >/dev/null 2>&1 \
+        && quickshell list 2>/dev/null | grep -q '^Instance '; then
+        quickshell kill
+      fi
+
+      mkdir -p "$HOME/.cache/matugen" "$HOME/.config/quickshell/generated"
+      matugen image --quiet "$wallpaper"
+
+      pkill -x swaybg 2>/dev/null || true
+      swaybg -i "$wallpaper" -m fill &
+
+      if command -v quickshell >/dev/null 2>&1; then
+        quickshell --daemonize
+      fi
+    '';
+  };
+in
 {
+  home.packages = [ wallpaperSet ];
+
   imports = [
     inputs.mango.hmModules.mango
   ];
@@ -18,9 +55,7 @@
       # Add autostart commands here, e.g.:
       #   waybar &
       #   dunst &
-      swaybg -i /home/saman/wallpapers/schoolrumble1.jpeg -m fill &
-      # Bottom panel
-      quickshell &
+      wallpaper-set /home/saman/wallpapers/schoolrumble1.jpeg
     '';
 
     settings = {

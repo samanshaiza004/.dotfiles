@@ -3,11 +3,25 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 config="$repo_root/nixos/modules/home/quickshell/shell"
+test_config="$(mktemp -d)"
 log_file="$(mktemp)"
-trap 'rm -f "$log_file"' EXIT
+trap 'rm -rf "$test_config" "$log_file"' EXIT
+
+cp -R "$config/." "$test_config/"
+mkdir -p "$test_config/generated"
+cp -R "$repo_root/tests/fixtures/quickshell-generated/." "$test_config/generated/"
+
+rg -q 'AppCatalog' "$config/services/AppCatalog.qml" "$config/shell.qml"
+rg -q 'target: "launcher"' "$config/launcher/StartMenu.qml"
+rg -q 'function open\(\)|function close\(\)' "$config/launcher/StartMenu.qml"
+rg -q 'StartButton' "$config/panel/PanelBar.qml"
+rg -q 'DesktopEntries\.applications' "$config/services/AppCatalog.qml"
+rg -q 'ScriptModel|objectProp: "id"' "$config/launcher/AppList.qml"
+rg -q 'AppSearch\.rank' "$config/services/AppCatalog.qml"
+rg -q 'qs ipc call launcher toggle' "$repo_root/nixos/modules/home/mango.nix"
 
 set +e
-timeout 8 quickshell --no-color --path "$config" >"$log_file" 2>&1
+timeout 8 quickshell --no-color --path "$test_config" >"$log_file" 2>&1
 status=$?
 set -e
 

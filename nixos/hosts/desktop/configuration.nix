@@ -62,7 +62,9 @@
    wget
    foot
    fuzzel
+   matugen
    swaybg
+   xdg-utils
    gh
    git
    wl-clipboard
