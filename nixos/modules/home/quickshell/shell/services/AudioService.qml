@@ -21,12 +21,17 @@ Item {
     const result = []
     if (Pipewire.defaultAudioSink) result.push(Pipewire.defaultAudioSink)
     if (Pipewire.preferredDefaultAudioSink) result.push(Pipewire.preferredDefaultAudioSink)
+    for (const node of Pipewire.nodes.values) {
+      if (root.isOutputDevice(node) && result.indexOf(node) < 0) result.push(node)
+    }
     return result
   }
 
   PwObjectTracker {
     objects: root.trackedNodes
   }
+
+  readonly property bool outputAvailable: root.ready && !!root.defaultOutput && !!root.defaultOutput.audio
 
   readonly property real volume: {
     const sink = root.defaultOutput
@@ -38,9 +43,9 @@ Item {
     return !!(sink && sink.audio && sink.audio.muted)
   }
 
-  readonly property string volumePercent: root.ready && root.defaultOutput
-    ? Math.round(root.volume * 100) + "%" : ""
-  readonly property string volumeIconName: root.muted ? "audio-volume-muted"
+  readonly property string volumePercent: root.outputAvailable
+    ? Math.round(root.volume * 100) + "%" : "--"
+  readonly property string volumeIconName: !root.outputAvailable || root.muted ? "audio-volume-muted"
     : root.volume < 0.34 ? "audio-volume-low"
     : root.volume < 0.67 ? "audio-volume-medium" : "audio-volume-high"
 

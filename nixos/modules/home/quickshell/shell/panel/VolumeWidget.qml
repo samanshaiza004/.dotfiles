@@ -56,10 +56,11 @@ Item {
     Text {
       anchors.verticalCenter: parent.verticalCenter
       font.pixelSize: theme.textSize
-      color: root.audioService.muted ? theme.textMuted
+      color: !root.audioService.outputAvailable || root.audioService.muted ? theme.textMuted
             : button.hovered ? theme.textPrimary
             : theme.textSecondary
-      text: root.audioService.muted ? "muted" : root.audioService.volumePercent
+      text: root.audioService.outputAvailable && !root.audioService.muted
+        ? root.audioService.volumePercent : root.audioService.outputAvailable ? "muted" : "--"
     }
   }
 

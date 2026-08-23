@@ -31,7 +31,8 @@ Item {
   WatchStream {
     topic: "all-tags"
     onJsonReceived: obj => {
-      root.monitors = obj.all_tags ? obj.all_tags : []
+      if (!obj || typeof obj !== "object") return
+      root.monitors = Array.isArray(obj.all_tags) ? obj.all_tags : []
     }
   }
 

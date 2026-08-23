@@ -59,10 +59,10 @@
       animation_curve_tag = "0.46,1.0,0.29,1";
       # Tactile + snappy: opening is perceptible but quick, closing is faster,
       # moves stay responsive, and tag changes remain readable without delay.
-      animation_duration_close = 140;
+      animation_duration_close = 300;
       animation_duration_focus = 0;
       animation_duration_move = 180;
-      animation_duration_open = 180;
+      animation_duration_open = 400;
       animation_duration_tag = 220;
       animation_fade_in = 1;
       animation_fade_out = 1;

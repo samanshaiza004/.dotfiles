@@ -17,7 +17,7 @@ Popup {
 
   function requestConnect(network) {
     if (!network) return
-    if (root.networkService.isProtected(network) && !network.known) {
+    if (root.networkService.requiresPassword(network)) {
       root.pendingNetwork = network
       root.password = ""
       passwordInput.forceActiveFocus()
@@ -32,7 +32,11 @@ Popup {
 
   onVisibleChanged: {
     if (visible) root.networkService.setScanning(true)
-    else root.networkService.setScanning(false)
+    else {
+      root.networkService.setScanning(false)
+      root.pendingNetwork = null
+      root.password = ""
+    }
   }
 
   content: Column {

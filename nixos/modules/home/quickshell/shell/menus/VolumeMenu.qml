@@ -16,7 +16,8 @@ Popup {
     spacing: 7
 
     Text {
-      text: root.audioService.muted ? "Muted" : "Volume"
+      text: !root.audioService.outputAvailable ? "No output"
+        : root.audioService.muted ? "Muted" : "Volume"
       color: theme.textOnActive
       font.pixelSize: theme.textSizeLarge
       font.bold: true
@@ -30,6 +31,7 @@ Popup {
       ButtonFrame {
         width: 28
         height: 26
+        enabled: root.audioService.outputAvailable
         checked: root.audioService.muted
         onClicked: root.audioService.toggleMute()
 
@@ -45,6 +47,7 @@ Popup {
         width: 154
         height: 26
         value: root.audioService.volume
+        enabled: root.audioService.outputAvailable
         onValueMoved: value => root.audioService.setVolume(value)
       }
 

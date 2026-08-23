@@ -36,8 +36,6 @@ Item {
       Connections {
         target: modelData
         function onParentChanged() { root.windowRevision++ }
-        function onAppIdChanged() { root.windowRevision++ }
-        function onTitleChanged() { root.windowRevision++ }
       }
     }
   }

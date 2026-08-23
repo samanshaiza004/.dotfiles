@@ -32,14 +32,25 @@ Item {
 
           Connections {
             target: modelData
-            function onConnectedChanged() { root.stateRevision++ }
+            ignoreUnknownSignals: true
+            function onConnectedChanged() {
+              if (modelData.connected && root.errorNetwork === modelData) root.clearError()
+              root.stateRevision++
+            }
             function onStateChanged() { root.stateRevision++ }
             function onNameChanged() { root.stateRevision++ }
+            function onSignalStrengthChanged() { root.stateRevision++ }
+            function onKnownChanged() { root.stateRevision++ }
+            function onSecurityChanged() { root.stateRevision++ }
             function onConnectionFailed(reason) {
               root.errorNetwork = modelData
               root.errorText = ConnectionFailReason.toString(reason)
               root.stateRevision++
             }
+          }
+
+          Component.onDestruction: {
+            if (root.errorNetwork === modelData) root.clearError()
           }
         }
       }
@@ -99,6 +110,19 @@ Item {
     return network && network.security !== WifiSecurityType.Open
   }
 
+  function requiresPassword(network) {
+    if (!network || network.known) return false
+    return network.security === WifiSecurityType.WpaPsk
+      || network.security === WifiSecurityType.Wpa2Psk
+      || network.security === WifiSecurityType.Sae
+  }
+
+  function clearError() {
+    root.errorNetwork = null
+    root.errorText = ""
+    root.stateRevision++
+  }
+
   function sortedNetworks(device) {
     const revision = root.stateRevision
     void revision
@@ -140,9 +164,10 @@ Item {
 
   function connectNetwork(network, password) {
     if (!network) return
-    root.errorNetwork = null
-    root.errorText = ""
-    if (password !== undefined && password !== "" && network.connectWithPsk) {
+    root.clearError()
+    if (network.connected) {
+      network.disconnect()
+    } else if (password !== undefined && password !== "" && root.requiresPassword(network)) {
       network.connectWithPsk(password)
     } else {
       network.connect()
