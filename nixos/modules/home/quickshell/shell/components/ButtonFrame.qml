@@ -58,6 +58,8 @@ Item {
   property color innerEdge: root._active ? root.activeInnerEdge : "transparent"
   property color glowColor: root.activeGlowColor
   property bool glowEnabled: true
+  // Pixel radius of the active-state glow. MultiEffect expects this in blurMax.
+  property real glowBlur: 5
 
   // --- Signals ---
   signal clicked
@@ -70,21 +72,9 @@ Item {
   implicitWidth: theme.controlSize
   implicitHeight: theme.controlSize
 
-  // Restrained glow for the checked state. Only rendered while active.
-  MultiEffect {
-    id: glow
-    anchors.fill: parent
-    anchors.margins: -3
-    visible: root._glowing
-    source: body
-    shadowEnabled: true
-    shadowBlur: 14
-    shadowOpacity: 0.55
-    shadowColor: root.glowColor
-    shadowVerticalOffset: 1
-  }
-
-  // The physical material itself.
+  // The physical material itself. The checked-state glow is a colored drop
+  // shadow applied as a layer effect so the material is only rendered once
+  // (a sibling MultiEffect with `source:` would draw a second copy of it).
   Surface {
     id: body
     anchors.fill: parent
@@ -94,6 +84,16 @@ Item {
     borderColor: root.borderColor
     topHighlight: root.topHighlight
     bottomShadow: root.bottomShadow
+    layer.enabled: root._glowing
+    layer.effect: MultiEffect {
+      shadowEnabled: true
+      autoPaddingEnabled: false
+      blurMax: Math.max(2, Math.round(root.glowBlur))
+      shadowBlur: 1.0
+      shadowOpacity: 0.5
+      shadowColor: root.glowColor
+      shadowVerticalOffset: 1
+    }
   }
 
   // Brighter inner edge for active/urgent states.

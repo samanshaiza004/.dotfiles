@@ -63,28 +63,34 @@ Item {
   implicitWidth: 120
   implicitHeight: 40
 
-  // Soft shadow. Only present when asked for (popups/menus), never for the
-  // full-width panel which lets the compositor shadow the layer surface.
-  MultiEffect {
-    id: shadowEffect
-    anchors.fill: parent
-    visible: root.shadowEnabled
-    source: material
-    shadowEnabled: true
-    shadowBlur: root.shadowBlur
-    shadowColor: root.shadowColor
-    shadowOpacity: root.shadowOpacity
-    shadowHorizontalOffset: root.shadowOffsetX
-    shadowVerticalOffset: root.shadowOffsetY
-  }
-
   // Layered material body.
+  //
+  // The shadow is applied as a layer effect on the material itself. Using a
+  // sibling MultiEffect with `source: material` would draw a second copy of the
+  // whole material (text, bars, everything) alongside the real one; Qt
+  // explicitly warns against that. A layer effect replaces the source with the
+  // effect output, so there is exactly one rendering.
   Item {
     id: material
     anchors {
       fill: parent
       margins: root.shadowPad
       topMargin: root.shadowPadTop
+    }
+    layer.enabled: root.shadowEnabled
+    layer.effect: MultiEffect {
+      shadowEnabled: true
+      // autoPadding is off: the caller already reserves room via shadowPad and
+      // the window, so the shadow bleeding out of the material is not clipped.
+      autoPaddingEnabled: false
+      // root.shadowBlur is a pixel radius; MultiEffect expects blurMax (pixels)
+      // + shadowBlur (0..1 normalized).
+      blurMax: Math.max(2, Math.round(root.shadowBlur))
+      shadowBlur: 1.0
+      shadowColor: root.shadowColor
+      shadowOpacity: root.shadowOpacity
+      shadowHorizontalOffset: root.shadowOffsetX
+      shadowVerticalOffset: root.shadowOffsetY
     }
 
     // Gradient body.

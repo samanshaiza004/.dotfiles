@@ -22,6 +22,8 @@ Item {
   property color fillLeadingEdge: theme.fillLeadingEdge
   property color fillGlow: theme.fillGlow
   property bool glowEnabled: true
+  // Pixel radius of the leading-edge glow (mapped to MultiEffect.blurMax).
+  property real glowBlur: 8
 
   implicitWidth: 120
   implicitHeight: 10
@@ -60,6 +62,18 @@ Item {
         GradientStop { position: 0.0; color: root.fillTop }
         GradientStop { position: 1.0; color: root.fillBottom }
       }
+      // Leading-edge glow applied as a layer effect on the fill itself (a
+      // sibling MultiEffect with `source: fill` would draw a second copy of it).
+      layer.enabled: root.glowEnabled && root.value > 0
+      layer.effect: MultiEffect {
+        shadowEnabled: true
+        autoPaddingEnabled: false
+        blurMax: Math.max(2, Math.round(root.glowBlur))
+        shadowBlur: 1.0
+        shadowOpacity: 0.6
+        shadowColor: root.fillGlow
+        shadowHorizontalOffset: 2
+      }
 
       // Top specular highlight on the fill.
       Rectangle {
@@ -76,19 +90,5 @@ Item {
         color: root.fillLeadingEdge
       }
     }
-  }
-
-  // Soft glow at the leading edge of the fill.
-  MultiEffect {
-    id: glow
-    anchors.fill: root
-    visible: root.glowEnabled && root.value > 0
-    source: fill
-    shadowEnabled: true
-    shadowBlur: 12
-    shadowOpacity: 0.6
-    shadowColor: root.fillGlow
-    shadowHorizontalOffset: 2
-    shadowVerticalOffset: 0
   }
 }
