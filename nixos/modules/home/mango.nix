@@ -18,20 +18,13 @@ let
         exit 1
       fi
 
-      if command -v quickshell >/dev/null 2>&1 \
-        && quickshell list 2>/dev/null | grep -q '^Instance '; then
-        quickshell kill
-      fi
-
       mkdir -p "$HOME/.cache/matugen" "$HOME/.config/quickshell/generated"
       matugen image --quiet "$wallpaper"
 
       pkill -x swaybg 2>/dev/null || true
       swaybg -i "$wallpaper" -m fill &
 
-      if command -v quickshell >/dev/null 2>&1; then
-        quickshell --daemonize
-      fi
+      systemctl --user reload app-com.mitchellh.ghostty.service 2>/dev/null || true
     '';
   };
 in
@@ -56,6 +49,7 @@ in
       #   waybar &
       #   dunst &
       wallpaper-set /home/saman/wallpapers/schoolrumble1.jpeg
+      quickshell &
     '';
 
     settings = {

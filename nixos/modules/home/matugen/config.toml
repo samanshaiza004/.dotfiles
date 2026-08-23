@@ -15,10 +15,6 @@ command = "true"
 input_path = "/home/saman/.config/matugen/templates/ghostty-colors"
 output_path = "~/.config/ghostty/config-colors"
 
-[templates.quickshell]
-input_path = "/home/saman/.config/matugen/templates/quickshell-colors.qml"
-output_path = "~/.config/quickshell/generated/MatugenColors.qml"
-
 [templates.palette-json]
 input_path = "/home/saman/.config/matugen/templates/palette.json"
 output_path = "~/.config/quickshell/generated/palette.json"

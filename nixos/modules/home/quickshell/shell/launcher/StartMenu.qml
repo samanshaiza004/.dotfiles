@@ -266,6 +266,7 @@ PanelWindow {
     shadowEnabled: true
     shadowBlur: 30
     shadowOpacity: 0.82
+    shadowPadTop: 0
     transformOrigin: Item.TopLeft
 
     content: ColumnLayout {

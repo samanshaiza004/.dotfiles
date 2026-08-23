@@ -8,8 +8,6 @@ log_file="$(mktemp)"
 trap 'rm -rf "$test_config" "$log_file"' EXIT
 
 cp -R "$config/." "$test_config/"
-mkdir -p "$test_config/generated"
-cp -R "$repo_root/tests/fixtures/quickshell-generated/." "$test_config/generated/"
 
 rg -q 'AppCatalog' "$config/services/AppCatalog.qml" "$config/shell.qml"
 rg -q 'target: "launcher"' "$config/launcher/StartMenu.qml"
@@ -18,6 +16,8 @@ rg -q 'StartButton' "$config/panel/PanelBar.qml"
 rg -q 'DesktopEntries\.applications' "$config/services/AppCatalog.qml"
 rg -q 'ScriptModel|objectProp: "id"' "$config/launcher/AppList.qml"
 rg -q 'AppSearch\.rank' "$config/services/AppCatalog.qml"
+rg -q 'FileView|watchChanges|JsonAdapter' "$config/services/ColorService.qml"
+rg -q 'ColorService' "$config/style/Theme.qml"
 rg -q 'qs ipc call launcher toggle' "$repo_root/nixos/modules/home/mango.nix"
 
 set +e
