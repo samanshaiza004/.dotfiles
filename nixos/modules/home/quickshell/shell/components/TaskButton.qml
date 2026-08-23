@@ -20,6 +20,8 @@ ButtonFrame {
   property int iconSize: 16
   property int labelSize: theme.textSize
   property bool urgent: false
+  property bool muted: false
+  property bool iconOnly: false
   property int minWidth: 26
   property int paddingX: 6
 
@@ -32,27 +34,35 @@ ButtonFrame {
 
   implicitWidth: Math.max(row.implicitWidth + root.paddingX * 2, root.minWidth)
   implicitHeight: theme.controlSize
+  opacity: root.muted ? 0.72 : 1.0
 
   content: Row {
     id: row
-    anchors.centerIn: parent
+    x: root.iconOnly ? (parent.width - width) / 2 : root.paddingX
+    width: root.iconOnly ? implicitWidth : Math.max(0, parent.width - root.paddingX * 2)
+    anchors.verticalCenter: parent.verticalCenter
     spacing: 4
 
     IconImage {
+      id: taskIcon
       visible: root.iconSource !== ""
       source: root.iconSource
       asynchronous: true
-      implicitSize: root.iconSize
+      width: root.iconSize
+      height: root.iconSize
       anchors.verticalCenter: parent.verticalCenter
     }
 
     Text {
       visible: root.label !== ""
       text: root.label
+      width: root.iconOnly ? 0 : Math.max(0, row.width - (taskIcon.visible ? taskIcon.width + row.spacing : 0))
+      elide: Text.ElideRight
       font.pixelSize: root.labelSize
       font.bold: root.checked
       color: root.urgent && root.checked ? theme.textOnUrgent
            : root.checked && root.enabled ? theme.textOnActive
+           : root.muted ? theme.textMuted
            : root.enabled ? theme.textSecondary
            : theme.textFaint
       verticalAlignment: Text.AlignVCenter

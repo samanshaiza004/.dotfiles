@@ -7,8 +7,6 @@ Item {
   id: root
 
   property var monitors: []          // [{ monitor, tags: [{index,is_active,is_urgent,layout,client_count}] }]
-  property var focusedClient: null   // client object or null
-  property var clients: []           // all clients
 
   // Tags for a given monitor name (fallback: first monitor).
   function tagsFor(monitorName) {
@@ -37,17 +35,4 @@ Item {
     }
   }
 
-  WatchStream {
-    topic: "focusing-client"
-    onJsonReceived: obj => {
-      root.focusedClient = obj
-    }
-  }
-
-  WatchStream {
-    topic: "all-clients"
-    onJsonReceived: obj => {
-      root.clients = obj.clients ? obj.clients : []
-    }
-  }
 }

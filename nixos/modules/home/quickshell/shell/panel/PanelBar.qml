@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../components"
 import "../style"
+import "../taskbar"
 
 // Top panel on the primary (largest) screen.
 //
@@ -23,6 +24,7 @@ PanelWindow {
   required property var audioService
   required property var networkService
   required property var calendarModel
+  required property var windowService
 
   WlrLayershell.namespace: "late2000s-panel"
 
@@ -91,12 +93,12 @@ PanelWindow {
       screenName: root.screen ? root.screen.name : ""
     }
 
-    FocusedAppWidget {
-      backend: root.backend
-    }
-
-    Item {
+    TaskStrip {
+      id: taskStrip
       Layout.fillWidth: true
+      Layout.minimumWidth: 0
+      windowService: root.windowService
+      tooltip: tooltip
     }
 
     TrayWidget {

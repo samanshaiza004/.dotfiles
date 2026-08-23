@@ -63,6 +63,7 @@ Item {
 
   // --- Signals ---
   signal clicked
+  signal middleClicked
   signal rightClicked
 
   readonly property bool _down: root.pressed && root.hovered && root.enabled
@@ -117,7 +118,7 @@ Item {
     anchors.fill: parent
     hoverEnabled: true
     enabled: root.enabled
-    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
     cursorShape: Qt.PointingHandCursor
     onEntered: root.hovered = true
     onExited: {
@@ -128,6 +129,7 @@ Item {
     onReleased: root.pressed = false
     onClicked: (mouse) => {
       if (mouse.button === Qt.RightButton) root.rightClicked()
+      else if (mouse.button === Qt.MiddleButton) root.middleClicked()
       else root.clicked()
     }
   }

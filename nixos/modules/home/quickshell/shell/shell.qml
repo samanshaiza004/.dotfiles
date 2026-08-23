@@ -29,10 +29,15 @@ ShellRoot {
     id: calendarModel
   }
 
+  WindowService {
+    id: windowService
+  }
+
   PanelBar {
     backend: backend
     audioService: audioService
     networkService: networkService
     calendarModel: calendarModel
+    windowService: windowService
   }
 }
