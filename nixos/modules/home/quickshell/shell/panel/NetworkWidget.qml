@@ -1,8 +1,9 @@
 import QtQuick
 import "../components"
+import "../menus"
 import "../style"
 
-// Network status: wifi SSID / ethernet / offline. Polls nmcli every 10s.
+// Network status: native Wi-Fi / ethernet / offline state.
 // Coherent hover/pressed treatment with a classic tooltip on hover.
 Item {
   id: root
@@ -12,16 +13,15 @@ Item {
   }
 
   required property var tooltip
+  required property var panelWindow
+  required property var closeOthers
+  required property var networkService
 
   implicitWidth: label.implicitWidth + 12
   implicitHeight: theme.controlSize
 
-  property string status: ""
-  property bool _sawConnected: false
-
-  readonly property string tooltipText: {
-    if (root.status === "") return "No network connection"
-    return "Network: " + root.status
+  function closePopup() {
+    networkPopup.close()
   }
 
   ButtonFrame {
@@ -30,8 +30,16 @@ Item {
 
     onHoveredChanged: {
       if (!enabled) return
-      if (hovered) root.tooltip.showFor(button, root.tooltipText)
+      if (hovered) root.tooltip.showFor(button, root.networkService.tooltipText)
       else root.tooltip.hide()
+    }
+
+    onClicked: {
+      if (networkPopup.visible) networkPopup.close()
+      else {
+        root.closeOthers()
+        networkPopup.open()
+      }
     }
   }
 
@@ -39,38 +47,16 @@ Item {
     id: label
     anchors.centerIn: button
     font.pixelSize: theme.textSize
-    color: root.status === "" ? theme.textFaint
-         : button.hovered ? theme.textPrimary
-         : theme.textSecondary
-    text: root.status
+    color: root.networkService.statusText === "" ? theme.textFaint
+          : button.hovered ? theme.textPrimary
+          : theme.textSecondary
+    text: root.networkService.statusText
   }
 
-  NmcliPoll {
-    onPollStarted: {
-      root._sawConnected = false
-    }
-    onResult: line => root.parse(line)
-    onPollDone: {
-      if (!root._sawConnected) root.status = ""
-    }
-  }
-
-  function parse(line) {
-    // TYPE:STATE:CONNECTION
-    const parts = line.split(":")
-    if (parts.length < 2) return
-    const type = parts[0]
-    const state = parts[1]
-    if (state !== "connected") return
-    const conn = parts.length > 2 ? parts[2] : ""
-    if (type === "wifi") {
-      root._sawConnected = true
-      root.status = conn === "" ? "wifi" : "wifi " + conn
-    } else if (type === "ethernet") {
-      root._sawConnected = true
-      if (root.status.indexOf("wifi") !== 0) {
-        root.status = conn === "" ? "eth" : "eth " + conn
-      }
-    }
+  NetworkMenu {
+    id: networkPopup
+    target: button
+    panelWindow: root.panelWindow
+    networkService: root.networkService
   }
 }

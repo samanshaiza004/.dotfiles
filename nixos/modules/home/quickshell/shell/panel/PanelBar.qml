@@ -20,6 +20,9 @@ PanelWindow {
   }
 
   required property var backend
+  required property var audioService
+  required property var networkService
+  required property var calendarModel
 
   WlrLayershell.namespace: "late2000s-panel"
 
@@ -44,6 +47,7 @@ PanelWindow {
 
   function closePopups() {
     volumeWidget.closePopup()
+    networkWidget.closePopup()
     clockWidget.closePopup()
   }
 
@@ -104,16 +108,22 @@ PanelWindow {
       tooltip: tooltip
       panelWindow: root
       closeOthers: root.closePopups
+      audioService: root.audioService
     }
 
     NetworkWidget {
+      id: networkWidget
       tooltip: tooltip
+      panelWindow: root
+      closeOthers: root.closePopups
+      networkService: root.networkService
     }
 
     ClockWidget {
       id: clockWidget
       panelWindow: root
       closeOthers: root.closePopups
+      calendarModel: root.calendarModel
     }
   }
 }

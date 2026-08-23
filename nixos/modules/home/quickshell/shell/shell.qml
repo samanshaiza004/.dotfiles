@@ -3,6 +3,7 @@
 import Quickshell
 import QtQml
 import "panel"
+import "services"
 
 // Entry point — "default" config at ~/.config/quickshell/shell.qml
 // UseQApplication enables Qt platform menus so StatusNotifier tray items can
@@ -15,7 +16,22 @@ ShellRoot {
     id: backend
   }
 
+  AudioService {
+    id: audioService
+  }
+
+  NetworkService {
+    id: networkService
+  }
+
+  CalendarModel {
+    id: calendarModel
+  }
+
   PanelBar {
     backend: backend
+    audioService: audioService
+    networkService: networkService
+    calendarModel: calendarModel
   }
 }

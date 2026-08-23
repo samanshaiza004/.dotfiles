@@ -1,5 +1,6 @@
 import QtQuick
 import "../components"
+import "../menus"
 import "../style"
 
 // Clock with a small popup showing the date — the same surface language as the
@@ -13,19 +14,10 @@ Item {
 
   required property var panelWindow
   required property var closeOthers
+  required property var calendarModel
 
   implicitWidth: label.implicitWidth + 16
   implicitHeight: theme.controlSize
-
-  property var now: new Date()
-
-  Timer {
-    interval: 1000
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: root.now = new Date()
-  }
 
   function closePopup() {
     clockPopup.close()
@@ -50,35 +42,13 @@ Item {
     font.pixelSize: theme.textSizeLarge
     font.bold: true
     color: button.hovered ? theme.textPrimary : theme.textSecondary
-    text: Qt.formatDateTime(root.now, "h:mm")
+    text: Qt.formatDateTime(root.calendarModel.now, "h:mm")
   }
 
-  Popup {
+  CalendarMenu {
     id: clockPopup
     target: button
     panelWindow: root.panelWindow
-
-    content: Column {
-      spacing: 6
-
-      Text {
-        text: Qt.formatDateTime(root.now, "dddd")
-        color: theme.textMuted
-        font.pixelSize: theme.textSize
-      }
-
-      Text {
-        text: Qt.formatDateTime(root.now, "h:mm")
-        color: theme.textOnActive
-        font.pixelSize: 26
-        font.bold: true
-      }
-
-      Text {
-        text: Qt.formatDateTime(root.now, "MMMM d, yyyy")
-        color: theme.textSecondary
-        font.pixelSize: theme.textSize
-      }
-    }
+    calendarModel: root.calendarModel
   }
 }
