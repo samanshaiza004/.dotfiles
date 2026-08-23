@@ -1,28 +1,80 @@
 import QtQuick
+import "../components"
+import "../style"
 
-// Clock, "h:mm" (12h without AM/PM).
+// Clock with a small popup showing the date — the same surface language as the
+// rest of the shell, proving the reusable popup primitive.
 Item {
   id: root
 
-  implicitWidth: text.implicitWidth
-  implicitHeight: 24
+  Theme {
+    id: theme
+  }
 
-  property string time: Qt.formatDateTime(new Date(), "h:mm")
+  required property var panelWindow
+
+  implicitWidth: label.implicitWidth + 16
+  implicitHeight: theme.controlSize
+
+  property var now: new Date()
 
   Timer {
     interval: 1000
     running: true
     repeat: true
     triggeredOnStart: true
-    onTriggered: root.time = Qt.formatDateTime(new Date(), "h:mm")
+    onTriggered: root.now = new Date()
+  }
+
+  function closePopup() {
+    clockPopup.close()
+  }
+
+  ButtonFrame {
+    id: button
+    anchors.fill: parent
+
+    onClicked: {
+      if (clockPopup.visible) clockPopup.close()
+      else clockPopup.open()
+    }
   }
 
   Text {
-    id: text
-    anchors.centerIn: parent
-    font.pixelSize: 12
+    id: label
+    anchors.centerIn: button
+    font.pixelSize: theme.textSizeLarge
     font.bold: true
-    color: "#e8e2d0"
-    text: root.time
+    color: button.hovered ? theme.textPrimary : theme.textSecondary
+    text: Qt.formatDateTime(root.now, "h:mm")
+  }
+
+  Popup {
+    id: clockPopup
+    target: button
+    panelWindow: root.panelWindow
+
+    content: Column {
+      spacing: 6
+
+      Text {
+        text: Qt.formatDateTime(root.now, "dddd")
+        color: theme.textMuted
+        font.pixelSize: theme.textSize
+      }
+
+      Text {
+        text: Qt.formatDateTime(root.now, "h:mm")
+        color: theme.textOnActive
+        font.pixelSize: 26
+        font.bold: true
+      }
+
+      Text {
+        text: Qt.formatDateTime(root.now, "MMMM d, yyyy")
+        color: theme.textSecondary
+        font.pixelSize: theme.textSize
+      }
+    }
   }
 }

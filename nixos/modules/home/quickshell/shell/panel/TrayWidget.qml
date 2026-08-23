@@ -1,13 +1,25 @@
 import Quickshell.Services.SystemTray
-import Quickshell.Widgets
 import QtQuick
+import "../components"
+import "../style"
 
-// StatusNotifier tray. Hidden when no items are registered.
+// StatusNotifier tray built on the TrayButton primitive. Hidden when no items
+// are registered.
+//
+// Primary click activates the item. Secondary click opens the application's
+// own menu when one exists (via the platform menu path), otherwise falls back
+// to secondaryActivate so middle-ish clicks still do something useful.
 Item {
   id: root
 
+  Theme {
+    id: theme
+  }
+
+  required property var tooltip
+
   implicitWidth: row.implicitWidth
-  implicitHeight: 24
+  implicitHeight: theme.controlSize
 
   Row {
     id: row
@@ -17,26 +29,26 @@ Item {
     Repeater {
       model: SystemTray.items
 
-      delegate: Item {
+      delegate: TrayButton {
+        id: trayBtn
+
         required property var modelData
 
-        width: 22
-        height: 22
+        iconSource: modelData.icon
+        tooltipText: modelData.tooltipTitle !== "" ? modelData.tooltipTitle : modelData.title
+        tooltip: root.tooltip
         visible: modelData.icon !== "" || modelData.title !== ""
 
-        IconImage {
-          anchors {
-            fill: parent
-            margins: 3
-          }
-          source: modelData.icon
-          asynchronous: true
-        }
+        onPrimaryActivated: modelData.activate()
 
-        MouseArea {
-          anchors.fill: parent
-          cursorShape: Qt.PointingHandCursor
-          onClicked: modelData.activate()
+        onSecondaryActivated: {
+          if (modelData.hasMenu) {
+            const win = trayBtn.QsWindow.window
+            const pos = trayBtn.mapToItem(win.contentItem, 0, 0)
+            modelData.display(win, Math.round(pos.x), Math.round(pos.y + trayBtn.height))
+          } else {
+            modelData.secondaryActivate()
+          }
         }
       }
     }

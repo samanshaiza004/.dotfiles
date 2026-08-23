@@ -2,21 +2,35 @@ import Quickshell
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
+import "../components"
+import "../style"
 
 // Top panel on the primary (largest) screen.
+//
+// Compositor side (Mango) owns the wallpaper blur + the layer shadow. This QML
+// side only adds the translucent glass tint, gradient, borders and highlights
+// on top, so the compositor effect stays visible through the surface. The
+// layer surface is explicitly namespaced "late2000s-panel" so Mango rules can
+// target it.
 PanelWindow {
   id: root
 
+  Theme {
+    id: theme
+  }
+
   required property var backend
+
+  WlrLayershell.namespace: "late2000s-panel"
 
   anchors {
     left: true
     right: true
     top: true
   }
-  implicitHeight: 32
-  exclusiveZone: 32
-  color: "#1c1812"
+  implicitHeight: theme.panelHeight
+  exclusiveZone: theme.panelHeight
+  color: "transparent"
   screen: root.mainScreen()
 
   function mainScreen() {
@@ -28,12 +42,32 @@ PanelWindow {
     return best
   }
 
-  // 1px accent line on bottom edge
-  Rectangle {
-    anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-    height: 1
-    color: "#c9b890"
-    opacity: 0.35
+  // Classic desktop tooltip, shared by every control in the panel.
+  Tooltip {
+    id: tooltip
+    panelWindow: root
+  }
+
+  // Translucent glass surface. The gradient carries its own alpha so the
+  // compositor blur reads through the panel.
+  Surface {
+    anchors.fill: parent
+    radius: 0
+    topColor: theme.panelGradTop
+    bottomColor: theme.panelGradBottom
+    borderColor: theme.panelBottomEdge
+    topHighlight: theme.panelTopHighlight
+    bottomShadow: theme.panelBottomShadow
+  }
+
+  // Clicking empty panel space dismisses an open popup (outside-click close).
+  MouseArea {
+    anchors.fill: parent
+    z: 0
+    onClicked: {
+      volumeWidget.closePopup()
+      clockWidget.closePopup()
+    }
   }
 
   RowLayout {
@@ -42,9 +76,11 @@ PanelWindow {
       leftMargin: 10
       rightMargin: 12
     }
-    spacing: 14
+    spacing: 10
+    z: 1
 
     TagsWidget {
+      id: tagsWidget
       backend: root.backend
       screenName: root.screen ? root.screen.name : ""
     }
@@ -57,12 +93,23 @@ PanelWindow {
       Layout.fillWidth: true
     }
 
-    TrayWidget {}
+    TrayWidget {
+      tooltip: tooltip
+    }
 
-    VolumeWidget {}
+    VolumeWidget {
+      id: volumeWidget
+      tooltip: tooltip
+      panelWindow: root
+    }
 
-    NetworkWidget {}
+    NetworkWidget {
+      tooltip: tooltip
+    }
 
-    ClockWidget {}
+    ClockWidget {
+      id: clockWidget
+      panelWindow: root
+    }
   }
 }

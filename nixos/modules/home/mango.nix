@@ -241,6 +241,12 @@
       layerrule = [
         "animation_type_open:zoom,layer_name:rofi"
         "animation_type_close:zoom,layer_name:rofi"
+        # The quickshell panel (translucent glass) keeps the compositor's
+        # background blur + layer shadow. blur_layer=1 / layer_shadows=1 are
+        # already global; this rule pins them ON for the panel namespace so a
+        # future global toggle can't silently strip the glass. Verify the live
+        # layer name with: mmsg get last_open_surface
+        "layer_name:^late2000s-panel$,noblur:0,noshadow:0"
       ];
 
     };

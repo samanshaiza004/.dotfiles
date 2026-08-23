@@ -1,20 +1,47 @@
 import QtQuick
+import "../components"
+import "../style"
 
 // Network status: wifi SSID / ethernet / offline. Polls nmcli every 10s.
+// Coherent hover/pressed treatment with a classic tooltip on hover.
 Item {
   id: root
 
-  implicitWidth: text.implicitWidth
-  implicitHeight: 24
+  Theme {
+    id: theme
+  }
+
+  required property var tooltip
+
+  implicitWidth: label.implicitWidth + 12
+  implicitHeight: theme.controlSize
 
   property string status: ""
   property bool _sawConnected: false
 
+  readonly property string tooltipText: {
+    if (root.status === "") return "No network connection"
+    return "Network: " + root.status
+  }
+
+  ButtonFrame {
+    id: button
+    anchors.fill: parent
+
+    onHoveredChanged: {
+      if (!enabled) return
+      if (hovered) root.tooltip.showFor(button, root.tooltipText)
+      else root.tooltip.hide()
+    }
+  }
+
   Text {
-    id: text
-    anchors.centerIn: parent
-    font.pixelSize: 11
-    color: root.status === "" ? "#6b665b" : "#d8d2c2"
+    id: label
+    anchors.centerIn: button
+    font.pixelSize: theme.textSize
+    color: root.status === "" ? theme.textFaint
+         : button.hovered ? theme.textPrimary
+         : theme.textSecondary
     text: root.status
   }
 
