@@ -6,7 +6,7 @@ import "../menus"
 import "../style"
 
 // Network status: native Wi-Fi / ethernet / offline state.
-// Coherent hover/pressed treatment with a classic tooltip on hover.
+// Coherent hover/pressed treatment; the menu already exposes the full state.
 Item {
   id: root
 
@@ -14,7 +14,6 @@ Item {
     id: theme
   }
 
-  required property var tooltip
   required property var panelWindow
   required property var closeOthers
   required property var networkService
@@ -29,12 +28,6 @@ Item {
   ButtonFrame {
     id: button
     anchors.fill: parent
-
-    onHoveredChanged: {
-      if (!enabled) return
-      if (hovered) root.tooltip.showFor(button, root.networkService.tooltipText)
-      else root.tooltip.hide()
-    }
 
     onClicked: {
       if (networkPopup.visible) networkPopup.close()

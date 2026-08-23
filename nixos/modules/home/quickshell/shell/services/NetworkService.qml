@@ -63,9 +63,6 @@ Item {
     return ""
   }
 
-  readonly property string tooltipText: root.statusText === ""
-    ? "No network connection" : "Network: " + root.statusText
-
   readonly property string statusIconName: {
     const revision = root.stateRevision
     void revision

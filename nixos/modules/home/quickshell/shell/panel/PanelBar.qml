@@ -115,7 +115,6 @@ PanelWindow {
 
     NetworkWidget {
       id: networkWidget
-      tooltip: tooltip
       panelWindow: root
       closeOthers: root.closePopups
       networkService: root.networkService

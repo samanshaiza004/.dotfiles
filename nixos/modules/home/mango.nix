@@ -18,6 +18,7 @@
       # Add autostart commands here, e.g.:
       #   waybar &
       #   dunst &
+      swaybg -i /home/saman/wallpapers/schoolrumble1.jpeg -m fill &
       # Bottom panel
       quickshell &
     '';
