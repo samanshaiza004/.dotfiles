@@ -17,6 +17,8 @@ QtObject {
   readonly property int textSize: 11
   readonly property int textSizeLarge: 12
   readonly property int pressOffset: 1
+  readonly property int popupOpenDuration: 400
+  readonly property int popupCloseDuration: 300
 
   // ---- Text -----------------------------------------------------------
   readonly property color textPrimary: "#E9E6DF"

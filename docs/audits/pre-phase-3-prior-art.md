@@ -56,6 +56,27 @@ This phase fixes them:
 The audit does not add grouping, pinning, launchers, notifications, recent
 apps, settings storage, tag inference, or multi-monitor panel architecture.
 
+### Follow-up runtime evaluation
+
+After this audit baseline, upstream Quickshell `v0.3.1` was evaluated because
+its changelog fixes crashes from freed objects laundered through `ScriptModel`,
+crashes when `ScriptModel.values` changes during processing, Wi-Fi network
+disappearance, child IPC calls after process relaunch, and
+`Toplevel.unsetRectangle`. The current launcher uses a `Repeater` rather than
+`ScriptModel`, but the runtime fixes are directly relevant to future filtered
+launcher/model work.
+
+Nixpkgs still exposes `0.3.0`, so the shell now uses a same-Qt `overrideAttrs`
+build of the upstream `v0.3.1` tarball. The override was built successfully
+against the pinned Qt 6.11.1 dependency graph, the binary reports `0.3.1`, and
+the generated shell loads cleanly. This decision is recorded in
+`nixos/modules/home/quickshell/quickshell.nix`.
+
+The launcher also now handles `DesktopEntry.runInTerminal` explicitly: parsed
+terminal commands are launched through the configured `ghostty -e` policy
+instead of calling `DesktopEntry.execute()` and silently ignoring
+`Terminal=true`.
+
 ## Current Architecture Inventory
 
 | Subsystem | State owner | External boundary | Async/process boundary | Persistence | Main assumption or gap |

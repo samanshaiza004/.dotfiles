@@ -30,6 +30,7 @@ PopupWindow {
   property var popupController: null
   property int gap: 2
   property int screenPadding: 6
+  property bool closing: false
 
   property color topColor: theme.surfaceGradTop
   property color bottomColor: theme.surfaceGradBottom
@@ -37,13 +38,21 @@ PopupWindow {
   property int padding: 8
 
   function open() {
+    openAnimation.stop()
+    closeAnimation.stop()
+    root.closing = false
+    body.opacity = 0
+    body.scale = 0.96
     root.visible = true
     if (root.popupController) root.popupController.open(root, root.dismissalRect)
+    openAnimation.restart()
   }
 
   function close() {
-    root.visible = false
+    if (!root.visible || root.closing) return
+    root.closing = true
     if (root.popupController) root.popupController.close(root)
+    closeAnimation.restart()
   }
 
   readonly property rect dismissalRect: {
@@ -117,6 +126,52 @@ PopupWindow {
   }
   onWidthChanged: root.updateDismissalRect()
   onHeightChanged: root.updateDismissalRect()
+
+  ParallelAnimation {
+    id: openAnimation
+    NumberAnimation {
+      target: body
+      property: "opacity"
+      from: 0
+      to: 1
+      duration: theme.popupOpenDuration
+      easing.type: Easing.OutCubic
+    }
+    NumberAnimation {
+      target: body
+      property: "scale"
+      from: 0.96
+      to: 1
+      duration: theme.popupOpenDuration
+      easing.type: Easing.OutCubic
+    }
+  }
+
+  SequentialAnimation {
+    id: closeAnimation
+    ParallelAnimation {
+      NumberAnimation {
+        target: body
+        property: "opacity"
+        to: 0
+        duration: theme.popupCloseDuration
+        easing.type: Easing.InCubic
+      }
+      NumberAnimation {
+        target: body
+        property: "scale"
+        to: 0.96
+        duration: theme.popupCloseDuration
+        easing.type: Easing.InCubic
+      }
+    }
+    ScriptAction {
+      script: {
+        root.visible = false
+        root.closing = false
+      }
+    }
+  }
 
   Surface {
     id: body

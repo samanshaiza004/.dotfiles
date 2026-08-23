@@ -67,7 +67,21 @@ PanelWindow {
 
   function launch(entry) {
     if (!entry) return
-    entry.execute()
+
+    // DesktopEntry.execute() intentionally ignores Terminal=true in 0.3.0/0.3.1.
+    // Make this policy explicit instead of silently launching terminal apps
+    // without their required terminal host.
+    if (entry.runInTerminal) {
+      if (!entry.command || entry.command.length === 0) return
+      const command = ["ghostty", "-e"]
+      for (const argument of entry.command) command.push(argument)
+      Quickshell.execDetached({
+        command: command,
+        workingDirectory: entry.workingDirectory,
+      })
+    } else {
+      entry.execute()
+    }
     root.close()
   }
 
