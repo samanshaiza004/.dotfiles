@@ -1,0 +1,18 @@
+[SddmGreeterTheme]
+Name=Late 2000s
+Description=Graphite and Oxygen inspired SDDM theme for the Mango desktop
+Author=Saman Shaiza
+License=MIT
+Type=sddm-theme
+Version=1.0.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+Theme-Id=late2000s
+Theme-API=2.0
+QtVersion=6
+
+[Desktop Entry]
+Type=Service
+X-KDE-ServiceTypes=SDDM/GreeterTheme
+Name=Late 2000s
+QtVersion=6

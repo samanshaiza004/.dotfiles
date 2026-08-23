@@ -160,6 +160,39 @@ and window services.
 Generated QML palette files are not used. The runtime boundary is the watched
 `palette.json` file and `ColorService.qml`.
 
+## SDDM Login
+
+SDDM is the system authentication and session manager. Its greeter runs on
+stable X11, while the selected logged-in session is Mango on Wayland:
+
+```text
+SDDM X11 greeter -> Mango Wayland session -> Home Manager -> Quickshell
+```
+
+The login theme is packaged declaratively by `modules/nixos/sddm.nix` and
+installed as the `late2000s` SDDM theme. It uses an independent Qt6 QML
+runtime and does not import Quickshell modules or read user-session files.
+The background is a deterministic graphite gradient rather than the user's
+wallpaper, so authentication remains available before Home Manager starts.
+
+Mango is registered through the existing NixOS Mango module, which contributes
+the `mango.desktop` Wayland session. `services.displayManager.defaultSession`
+preselects that session without creating a duplicate desktop entry.
+
+Test the packaged theme without changing the active display manager:
+
+```sh
+bash tests/sddm-theme-test.sh
+```
+
+If a display-manager change prevents graphical login, switch to a TTY with
+`Ctrl+Alt+F3`, log in, and roll back the last generation:
+
+```sh
+sudo nixos-rebuild switch --rollback
+sudo systemctl restart display-manager
+```
+
 ## Layout
 
 ```text
