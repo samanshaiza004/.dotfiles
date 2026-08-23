@@ -26,7 +26,7 @@ PanelWindow {
   visible: false
   screen: root.panelWindow ? root.panelWindow.screen : null
   color: "transparent"
-  exclusiveZone: 0
+  exclusionMode: ExclusionMode.Ignore
 
   anchors {
     left: true
