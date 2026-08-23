@@ -4,7 +4,7 @@ Item {
     id: root
 
     property alias text: input.text
-    property alias echoMode: input.echoMode
+    property int echoMode: TextInput.Password
     property string placeholderText: ""
     property Item tabTarget
     property Item backTabTarget
@@ -29,16 +29,24 @@ Item {
         selectionColor: "#42536b"
         selectedTextColor: "#f3f6fa"
         font.pixelSize: 12
-        echoMode: TextInput.Password
+        echoMode: root.echoMode
         clip: true
         selectByMouse: true
         passwordCharacter: "*"
-        placeholderText: root.placeholderText
-        placeholderTextColor: "#8a857b"
         KeyNavigation.tab: root.tabTarget
         KeyNavigation.backtab: root.backTabTarget
 
         Keys.onReturnPressed: root.accepted()
+    }
+
+    Text {
+        anchors.left: parent.left
+        anchors.leftMargin: 12
+        anchors.verticalCenter: parent.verticalCenter
+        text: root.placeholderText
+        color: "#8a857b"
+        font.pixelSize: 12
+        visible: input.text.length === 0
     }
 
     function focusField() {
