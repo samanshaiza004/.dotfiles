@@ -26,6 +26,8 @@ QtObject {
   readonly property color textOnActive: "#EFF4F9"
   readonly property color textOnUrgent: "#F2B49C"
   readonly property color textOnTrack: "#DCE4EC"
+  readonly property color calendarWeekday: "#C9CBC9"
+  readonly property color calendarDate: "#D4D3CE"
 
   // ---- Graphite / smoke surfaces --------------------------------------
   readonly property color graphiteDeep: "#121315"

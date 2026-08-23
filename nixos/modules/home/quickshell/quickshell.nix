@@ -7,6 +7,7 @@
   # not tracking master.
   home.packages = with pkgs; [
     quickshell
+    kdePackages.oxygen-icons
   ];
 
   # shell.qml + widgets live in ./shell; becomes ~/.config/quickshell.

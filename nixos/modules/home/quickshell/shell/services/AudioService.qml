@@ -40,6 +40,9 @@ Item {
 
   readonly property string volumePercent: root.ready && root.defaultOutput
     ? Math.round(root.volume * 100) + "%" : ""
+  readonly property string volumeIconName: root.muted ? "audio-volume-muted"
+    : root.volume < 0.34 ? "audio-volume-low"
+    : root.volume < 0.67 ? "audio-volume-medium" : "audio-volume-high"
 
   function isOutputDevice(node) {
     return !!(node && node.audio && node.isSink && !node.isStream)

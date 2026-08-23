@@ -1,4 +1,6 @@
 import QtQuick
+import Quickshell
+import Quickshell.Widgets
 import "../components"
 import "../menus"
 import "../style"
@@ -43,14 +45,27 @@ Item {
     }
   }
 
-  Text {
+  Row {
     id: label
     anchors.centerIn: button
-    font.pixelSize: theme.textSize
-    color: root.networkService.statusText === "" ? theme.textFaint
-          : button.hovered ? theme.textPrimary
-          : theme.textSecondary
-    text: root.networkService.statusText
+    spacing: 3
+
+    IconImage {
+      width: 14
+      height: 14
+      anchors.verticalCenter: parent.verticalCenter
+      source: Quickshell.iconPath(root.networkService.statusIconName)
+      opacity: root.networkService.statusText === "" ? 0.6 : 0.95
+    }
+
+    Text {
+      anchors.verticalCenter: parent.verticalCenter
+      font.pixelSize: theme.textSize
+      color: root.networkService.statusText === "" ? theme.textFaint
+            : button.hovered ? theme.textPrimary
+            : theme.textSecondary
+      text: root.networkService.statusText
+    }
   }
 
   NetworkMenu {

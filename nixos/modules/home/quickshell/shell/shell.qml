@@ -1,4 +1,5 @@
 //@ pragma UseQApplication
+//@ pragma IconTheme oxygen
 
 import Quickshell
 import QtQml

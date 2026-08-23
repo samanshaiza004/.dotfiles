@@ -1,5 +1,8 @@
 import Quickshell.Networking
+import Quickshell
+import Quickshell.Widgets
 import QtQuick
+import QtQuick.Controls
 import "../components"
 import "../style"
 
@@ -23,13 +26,17 @@ Popup {
     }
   }
 
+  function wifiIcon(network) {
+    return root.networkService.wifiIconName(network)
+  }
+
   onVisibleChanged: {
     if (visible) root.networkService.setScanning(true)
     else root.networkService.setScanning(false)
   }
 
   content: Column {
-    width: 260
+    width: 280
     spacing: 7
 
     Text {
@@ -39,47 +46,75 @@ Popup {
       text: root.networkService.statusText || "Network"
     }
 
-    Repeater {
-      model: root.networkService.devices
+    ScrollView {
+      id: networkScroll
+      width: parent.width
+      height: Math.min(300, Math.max(1, networkList.implicitHeight))
+      clip: true
+      contentWidth: availableWidth
+      ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
       Column {
-        id: deviceColumn
-        required property var modelData
-        width: 260
-        spacing: 4
-
-        Text {
-          color: theme.textMuted
-          font.pixelSize: theme.textSize
-          text: deviceColumn.modelData.type === DeviceType.Wifi
-            ? "Wi-Fi (" + deviceColumn.modelData.name + ")" : "Ethernet (" + deviceColumn.modelData.name + ")"
-        }
-
-        MenuRow {
-          width: 260
-          visible: deviceColumn.modelData.type === DeviceType.Wired
-          label: deviceColumn.modelData.connected ? "Connected" : "Disconnected"
-          detail: deviceColumn.modelData.connected ? "disconnect" : ""
-          selected: deviceColumn.modelData.connected
-          onClicked: root.networkService.disconnect(deviceColumn.modelData)
-        }
+        id: networkList
+        width: networkScroll.availableWidth
+        spacing: 8
 
         Repeater {
-          model: deviceColumn.modelData.networks.values
+          model: root.networkService.devices
 
-          MenuRow {
+          Column {
+            id: deviceColumn
             required property var modelData
-            width: 260
-            visible: deviceColumn.modelData.type === DeviceType.Wifi
-            label: modelData.name || "Hidden network"
-            detail: modelData.connected ? "connected"
-                   : modelData.signalStrength !== undefined
-                     ? Math.round(modelData.signalStrength * 100) + "%" : ""
-            selected: modelData.connected
-            onClicked: root.requestConnect(modelData)
+            required property int index
+            width: networkList.width
+            spacing: 4
+
+            SectionHeader {
+              width: parent.width
+              label: deviceColumn.modelData.type === DeviceType.Wifi
+                ? "Wi-Fi · " + deviceColumn.modelData.name
+                : "Ethernet · " + deviceColumn.modelData.name
+              topLine: deviceColumn.index > 0
+            }
+
+            MenuRow {
+              width: parent.width
+              visible: deviceColumn.modelData.type === DeviceType.Wired
+              iconName: "network-wired"
+              label: deviceColumn.modelData.connected ? "Connected" : "Disconnected"
+              detail: deviceColumn.modelData.connected ? "disconnect" : ""
+              selected: deviceColumn.modelData.connected
+              statusKind: deviceColumn.modelData.connected ? "connected" : "normal"
+              onClicked: root.networkService.disconnect(deviceColumn.modelData)
+            }
+
+            Repeater {
+              model: root.networkService.sortedNetworks(deviceColumn.modelData)
+
+              MenuRow {
+                required property var modelData
+                width: deviceColumn.width
+                visible: deviceColumn.modelData.type === DeviceType.Wifi
+                iconName: root.wifiIcon(modelData)
+                overlayIconName: root.networkService.isProtected(modelData)
+                  ? "emblem-locked" : ""
+                label: modelData.name || "Hidden network"
+                detail: root.networkService.networkDetail(modelData)
+                selected: modelData.connected
+                statusKind: root.networkService.networkState(modelData)
+                onClicked: root.requestConnect(modelData)
+              }
+            }
           }
         }
       }
+    }
+
+    SectionHeader {
+      width: parent.width
+      visible: root.pendingNetwork !== null
+      label: root.pendingNetwork ? "Authentication" : ""
+      topLine: true
     }
 
     Text {
@@ -95,7 +130,7 @@ Popup {
       spacing: 6
 
       Rectangle {
-        width: 174
+        width: 190
         height: 26
         color: theme.trackColor
         border.width: 1

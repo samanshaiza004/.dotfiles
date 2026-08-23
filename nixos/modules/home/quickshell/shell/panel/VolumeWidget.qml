@@ -1,4 +1,6 @@
 import QtQuick
+import Quickshell
+import Quickshell.Widgets
 import "../components"
 import "../menus"
 import "../style"
@@ -37,14 +39,27 @@ Item {
     }
   }
 
-  Text {
+  Row {
     id: label
     anchors.centerIn: button
-    font.pixelSize: theme.textSize
-    color: root.audioService.muted ? theme.textMuted
-          : button.hovered ? theme.textPrimary
-          : theme.textSecondary
-    text: root.audioService.muted ? "\u266A muted" : "\u266A " + root.audioService.volumePercent
+    spacing: 3
+
+    IconImage {
+      width: 14
+      height: 14
+      anchors.verticalCenter: parent.verticalCenter
+      source: Quickshell.iconPath(root.audioService.volumeIconName)
+      opacity: button.hovered ? 1 : 0.9
+    }
+
+    Text {
+      anchors.verticalCenter: parent.verticalCenter
+      font.pixelSize: theme.textSize
+      color: root.audioService.muted ? theme.textMuted
+            : button.hovered ? theme.textPrimary
+            : theme.textSecondary
+      text: root.audioService.muted ? "muted" : root.audioService.volumePercent
+    }
   }
 
   VolumeMenu {

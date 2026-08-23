@@ -1,4 +1,6 @@
 import QtQuick
+import Quickshell
+import Quickshell.Widgets
 import "../components"
 import "../style"
 
@@ -31,11 +33,11 @@ Popup {
         checked: root.audioService.muted
         onClicked: root.audioService.toggleMute()
 
-        Text {
+        IconImage {
           anchors.centerIn: parent
-          color: theme.textPrimary
-          font.pixelSize: theme.textSize
-          text: root.audioService.muted ? "M" : "♪"
+          width: 18
+          height: 18
+          source: Quickshell.iconPath(root.audioService.volumeIconName)
         }
       }
 
@@ -56,10 +58,9 @@ Popup {
       }
     }
 
-    Text {
-      color: theme.textMuted
-      font.pixelSize: theme.textSize
-      text: "Output device"
+    SectionHeader {
+      width: 224
+      label: "Output device"
     }
 
     Repeater {
@@ -68,6 +69,8 @@ Popup {
       MenuRow {
         required property var modelData
         width: 224
+        iconName: "audio-card"
+        overlayIconName: modelData === root.audioService.defaultOutput ? "checkbox" : ""
         label: root.audioService.outputName(modelData)
         selected: modelData === root.audioService.defaultOutput
         onClicked: root.audioService.setDefaultOutput(modelData)

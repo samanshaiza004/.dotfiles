@@ -1,4 +1,6 @@
 import QtQuick
+import Quickshell
+import Quickshell.Widgets
 import "../components"
 import "../style"
 
@@ -22,7 +24,12 @@ Popup {
         width: 28
         height: 26
         onClicked: root.calendarModel.showPreviousMonth()
-        Text { anchors.centerIn: parent; color: theme.textPrimary; text: "<" }
+        IconImage {
+          anchors.centerIn: parent
+          width: 15
+          height: 15
+          source: Quickshell.iconPath("go-previous")
+        }
       }
 
       Text {
@@ -39,7 +46,12 @@ Popup {
         width: 28
         height: 26
         onClicked: root.calendarModel.showNextMonth()
-        Text { anchors.centerIn: parent; color: theme.textPrimary; text: ">" }
+        IconImage {
+          anchors.centerIn: parent
+          width: 15
+          height: 15
+          source: Quickshell.iconPath("go-next")
+        }
       }
     }
 
@@ -51,7 +63,7 @@ Popup {
         Text {
           width: 34
           horizontalAlignment: Text.AlignHCenter
-          color: theme.textMuted
+          color: theme.calendarWeekday
           font.pixelSize: theme.textSize
           text: modelData
         }
@@ -85,7 +97,7 @@ Popup {
           Text {
             anchors.centerIn: parent
             color: !parent.modelData.inMonth ? theme.textFaint
-                 : parent.modelData.today ? theme.textPrimary : theme.textSecondary
+                 : parent.modelData.today ? theme.textPrimary : theme.calendarDate
             font.pixelSize: theme.textSize
             text: parent.modelData.number
           }
@@ -95,6 +107,7 @@ Popup {
 
     MenuRow {
       width: 238
+      iconName: "view-calendar-month"
       label: "Today"
       detail: Qt.formatDateTime(root.calendarModel.now, "MMM d")
       onClicked: root.calendarModel.showCurrentMonth()
