@@ -175,6 +175,7 @@
         "SUPER,r,reload_config"
         "Alt,u,spawn,fuzzel"
         "SUPER,Return,spawn,ghostty"
+        "SUPER+SHIFT,S,spawn_shell,grim -g \"$(slurp)\" - | wl-copy"
         "SUPER,c,killclient"
         "SUPER,Tab,focusstack,next"
         "ALT,Left,focusdir,left"
