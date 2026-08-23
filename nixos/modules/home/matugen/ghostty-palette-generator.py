@@ -22,11 +22,12 @@ def rgb_from_hex(color):
     return tuple(int(color[index:index + 2], 16) / 255 for index in (0, 2, 4))
 
 
+def linear(value):
+    return value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+
+
 def oklch(color):
     red, green, blue = rgb_from_hex(color)
-
-    def linear(value):
-        return value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
 
     red, green, blue = linear(red), linear(green), linear(blue)
     lightness = 0.4122214708 * red + 0.5363325363 * green + 0.0514459929 * blue
@@ -46,21 +47,21 @@ def oklch(color):
 
 def classify(color):
     lightness, chroma, hue = oklch(color)
-    if chroma < 0.08 or lightness < 0.25 or lightness > 0.85:
+    if chroma < 0.05 or lightness < 0.45 or lightness > 0.85:
         return None
-    if hue >= 345 or hue < 15:
+    if hue >= 345 or hue < 40:
         return "red"
-    if hue < 45:
-        return "orange"
     if hue < 75:
+        return "orange"
+    if hue < 110:
         return "yellow"
     if hue < 165:
         return "green"
-    if hue < 205:
+    if hue < 220:
         return "cyan"
-    if hue < 260:
+    if hue < 285:
         return "blue"
-    if hue < 315:
+    if hue < 330:
         return "purple"
     return "magenta"
 
@@ -73,6 +74,22 @@ def lighten(color):
 def darken(color):
     values = rgb_from_hex(color)
     return "#" + "".join(f"{round(value * 255 * 0.55):02x}" for value in values)
+
+
+def relative_luminance(color):
+    red, green, blue = rgb_from_hex(color)
+    red, green, blue = linear(red), linear(green), linear(blue)
+    return 0.2126 * red + 0.7152 * green + 0.0722 * blue
+
+
+def contrast_ratio(first, second):
+    lighter = max(relative_luminance(first), relative_luminance(second))
+    darker = min(relative_luminance(first), relative_luminance(second))
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def best_foreground(background):
+    return max(("#050506", "#e9e6df"), key=lambda color: contrast_ratio(background, color))
 
 
 def ranked_colors(wallpaper):
@@ -130,7 +147,7 @@ def write_palette(wallpaper):
         "foreground = #e9e6df",
         f"cursor-color = {accent}",
         f"selection-background = {darken(accent)}",
-        "selection-foreground = #050506",
+        f"selection-foreground = {best_foreground(darken(accent))}",
         "",
         "# Fixed semantic ANSI colors with compatible wallpaper hues where available.",
         "palette = 0=#111216",

@@ -22,7 +22,7 @@ let
       fi
 
       mkdir -p "$HOME/.cache/matugen" "$HOME/.config/quickshell/generated"
-      matugen image --quiet "$wallpaper"
+      matugen image --quiet --source-color-index 0 "$wallpaper"
       ghostty-palette-generator "$wallpaper"
 
       pkill -x swaybg 2>/dev/null || true

@@ -14,7 +14,7 @@ in
     if [ -f "$wallpaper" ]; then
       mkdir -p "$HOME/.cache/matugen" "$HOME/.config/ghostty" "$HOME/.config/quickshell/generated"
       rm -f "$HOME/.config/quickshell/generated/MatugenColors.qml" "$HOME/.config/quickshell/generated/qmldir"
-      ${pkgs.matugen}/bin/matugen image --quiet "$wallpaper"
+      ${pkgs.matugen}/bin/matugen image --quiet --source-color-index 0 "$wallpaper"
       ${ghosttyPaletteGenerator}/bin/ghostty-palette-generator "$wallpaper"
     fi
   '';

@@ -9,6 +9,28 @@ cleanup() {
 }
 trap cleanup EXIT
 
+nix shell nixpkgs#python3 --command python3 - "$repo_root/nixos/modules/home/matugen/ghostty-palette-generator.py" <<'PY'
+import importlib.util
+import sys
+
+spec = importlib.util.spec_from_file_location("generator", sys.argv[1])
+generator = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(generator)
+
+expected = {
+    "#c95c54": "red",
+    "#c7a85b": "yellow",
+    "#7fa66a": "green",
+    "#67a0a0": "cyan",
+    "#6e93c4": "blue",
+    "#9b79a8": "purple",
+    "#777777": None,
+}
+for color, bucket in expected.items():
+    assert generator.classify(color) == bucket, (color, generator.classify(color), bucket)
+assert generator.best_foreground(generator.darken("#6e93c4")) == "#e9e6df"
+PY
+
 nix shell nixpkgs#matugen nixpkgs#python3 --command env \
   HOME="$test_home" \
   python3 "$repo_root/nixos/modules/home/matugen/ghostty-palette-generator.py" \

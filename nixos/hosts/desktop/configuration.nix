@@ -38,6 +38,8 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  programs.fish.enable = true;
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -48,6 +50,7 @@
   users.users."saman" = {
     isNormalUser = true;
     description = "samanshaiza";
+    shell = pkgs.fish;
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
   };
