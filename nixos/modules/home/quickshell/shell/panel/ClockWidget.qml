@@ -12,6 +12,7 @@ Item {
   }
 
   required property var panelWindow
+  required property var closeOthers
 
   implicitWidth: label.implicitWidth + 16
   implicitHeight: theme.controlSize
@@ -36,7 +37,10 @@ Item {
 
     onClicked: {
       if (clockPopup.visible) clockPopup.close()
-      else clockPopup.open()
+      else {
+        root.closeOthers()
+        clockPopup.open()
+      }
     }
   }
 

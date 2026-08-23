@@ -42,6 +42,11 @@ PanelWindow {
     return best
   }
 
+  function closePopups() {
+    volumeWidget.closePopup()
+    clockWidget.closePopup()
+  }
+
   // Classic desktop tooltip, shared by every control in the panel.
   Tooltip {
     id: tooltip
@@ -64,10 +69,7 @@ PanelWindow {
   MouseArea {
     anchors.fill: parent
     z: 0
-    onClicked: {
-      volumeWidget.closePopup()
-      clockWidget.closePopup()
-    }
+    onClicked: root.closePopups()
   }
 
   RowLayout {
@@ -101,6 +103,7 @@ PanelWindow {
       id: volumeWidget
       tooltip: tooltip
       panelWindow: root
+      closeOthers: root.closePopups
     }
 
     NetworkWidget {
@@ -110,6 +113,7 @@ PanelWindow {
     ClockWidget {
       id: clockWidget
       panelWindow: root
+      closeOthers: root.closePopups
     }
   }
 }

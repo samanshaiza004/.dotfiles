@@ -1,21 +1,20 @@
 import Quickshell
-import Quickshell.Wayland
 import QtQuick
 import "../style"
 
-// Reusable popup/menu surface for wlroots compositors.
+// Reusable popup/menu surface anchored natively to the panel via PopupWindow
+// (an xdg_popup). Verified working on the pinned Mango (813acaf / 0.16.1) +
+// Quickshell 0.3.0: the surface is created, configured, and rendered, and the
+// compositor performs edge correction.
 //
-// Quickshell's PopupWindow is an xdg_popup, which wlroots rejects when the
-// parent is a layer-shell panel ("the popup is not an xdg_popup"), so this
-// uses a real floating layer surface instead: positioned above everything with
-// no exclusive zone, never focusable, and anchored via margins at the target's
-// on-screen coordinates.
+// Vertical authority is the bottom of the panel; horizontal authority is the
+// triggering control. Coordinates stay panel-local — no global monitor origins.
 //
-// The body uses the Surface material: glass gradient, strong soft shadow,
-// clear outer border, inset highlight, small radius — slightly deeper than the
-// panel. The compositor draws the drop shadow (layer_shadows is global), so
-// the surface itself renders no QML shadow.
-PanelWindow {
+// grabFocus is intentionally left false: enabling it makes Qt try to create a
+// grabbing xdg_popup, which the layer-shell panel parent rejects on this stack
+// ("Cannot attach popup ... as the popup is not an xdg_popup"). Outside-click
+// dismissal is instead handled by the panel's click catcher + button toggle.
+PopupWindow {
   id: root
 
   Theme {
@@ -24,12 +23,12 @@ PanelWindow {
 
   default property alias content: surfaceContent.data
 
-  // Item to position the popup under, plus the panel window used to map
-  // coordinates. The popup centers itself horizontally over the target and
-  // appears `gap` pixels below it.
+  // Triggering control (horizontal authority) and the panel window the popup
+  // anchors to (vertical authority + anchor surface).
   property Item target: null
   property var panelWindow: null
-  property int gap: 6
+  property int gap: 2
+  property int screenPadding: 6
 
   property color topColor: theme.surfaceGradTop
   property color bottomColor: theme.surfaceGradBottom
@@ -38,41 +37,43 @@ PanelWindow {
 
   function open() {
     root.visible = true
-    root.reposition()
   }
 
   function close() {
     root.visible = false
   }
 
-  WlrLayershell.namespace: "late2000s-popup"
-  exclusiveZone: 0
-  focusable: false
   color: "transparent"
-  screen: root.panelWindow ? root.panelWindow.screen : null
+  implicitWidth: surfaceContent.childrenRect.width + root.padding * 2 + body.shadowPad * 2
+  implicitHeight: surfaceContent.childrenRect.height + root.padding * 2 + body.shadowPadTop + body.shadowPad
 
-  anchors {
-    left: true
-    top: true
+  anchor {
+    window: root.panelWindow
+    edges: Edges.Bottom
+    gravity: Edges.Bottom
+    adjustment: PopupAdjustment.Slide | PopupAdjustment.Flip
+    onAnchoring: {
+      if (!root.target || !root.panelWindow) return
+      const pos = root.target.mapToItem(root.panelWindow.contentItem, root.target.width / 2, 0)
+      let cx = pos.x
+      const scr = root.panelWindow.screen
+      if (scr) {
+        cx = Math.max(
+          root.screenPadding + root.width / 2,
+          Math.min(cx, scr.width - root.width / 2 - root.screenPadding)
+        )
+      }
+      // gravity Bottom places the popup's top at the anchor rect's bottom edge.
+      anchor.rect.x = Math.round(cx - 1)
+      anchor.rect.y = Math.round(root.panelWindow.height) + root.gap - 1
+      anchor.rect.width = 2
+      anchor.rect.height = 1
+    }
   }
 
-  implicitWidth: surfaceContent.childrenRect.width + root.padding * 2
-  implicitHeight: surfaceContent.childrenRect.height + root.padding * 2
-
-  function reposition() {
-    if (!root.target || !root.panelWindow) return
-    const scr = root.panelWindow.screen
-    if (!scr) return
-    const pos = root.target.mapToItem(root.panelWindow.contentItem, 0, root.target.height)
-    root.margins.left = Math.round(scr.x + pos.x + root.target.width / 2 - root.width / 2)
-    root.margins.top = Math.round(scr.y + pos.y + root.gap)
-  }
-
-  onVisibleChanged: if (root.visible) root.reposition()
-  onWidthChanged: if (root.visible) root.reposition()
-  onHeightChanged: if (root.visible) root.reposition()
-  onTargetChanged: if (root.visible) root.reposition()
-  onPanelWindowChanged: if (root.visible) root.reposition()
+  onVisibleChanged: if (root.visible) root.anchor.updateAnchor()
+  onTargetChanged: if (root.visible) root.anchor.updateAnchor()
+  onPanelWindowChanged: if (root.visible) root.anchor.updateAnchor()
 
   Surface {
     id: body
@@ -83,6 +84,12 @@ PanelWindow {
     borderColor: theme.surfaceBorder
     topHighlight: theme.surfaceTopHighlight
     bottomShadow: theme.surfaceBottomShadow
+    shadowEnabled: true
+    shadowBlur: 24
+    shadowOpacity: 0.7
+    shadowOffsetY: 4
+    // No room above the card so the popup hugs the panel; shadow lives below/sides.
+    shadowPadTop: 0
 
     content: Item {
       id: surfaceContent

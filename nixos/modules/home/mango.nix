@@ -56,11 +56,13 @@
       animation_curve_opafadeout = "0.5,0.5,0.5,0.5";
       animation_curve_open = "0.46,1.0,0.29,1";
       animation_curve_tag = "0.46,1.0,0.29,1";
-      animation_duration_close = 800;
+      # Tactile + snappy: opening is perceptible but quick, closing is faster,
+      # moves stay responsive, and tag changes remain readable without delay.
+      animation_duration_close = 140;
       animation_duration_focus = 0;
-      animation_duration_move = 500;
-      animation_duration_open = 400;
-      animation_duration_tag = 350;
+      animation_duration_move = 180;
+      animation_duration_open = 180;
+      animation_duration_tag = 220;
       animation_fade_in = 1;
       animation_fade_out = 1;
       animation_type_close = "slide";
@@ -242,6 +244,11 @@
       layerrule = [
         "animation_type_open:zoom,layer_name:rofi"
         "animation_type_close:zoom,layer_name:rofi"
+        # slurp's interactive selection overlay (layer name "selection", verified
+        # via `mmsg get last_open_surface`): disable layer animation/blur/shadow
+        # so the desktop stays visible while dragging a screenshot region instead
+        # of blacking out.
+        "layer_name:^selection$,noanim:1,noblur:1,noshadow:1"
         # The quickshell panel (translucent glass) keeps the compositor's
         # background blur + layer shadow. blur_layer=1 / layer_shadows=1 are
         # already global; this rule pins them ON for the panel namespace so a

@@ -1,15 +1,13 @@
 import Quickshell
-import Quickshell.Wayland
 import QtQuick
 import "../style"
 
-// Classic desktop tooltip: a small, dense, high-contrast surface below the
-// hovered control. Pale neutral base, thin dark border, tiny shadow, compact
-// padding, small radius — deliberately not a Material-style popup.
+// Classic desktop tooltip: a small, dense, high-contrast surface that hugs its
+// target. Pale neutral base, thin dark border, tiny shadow, compact padding,
+// small radius — deliberately not a Material-style popup.
 //
-// Rendered as a real floating layer surface (never focusable, no exclusive
-// zone); the compositor draws its small shadow.
-PanelWindow {
+// Uses the same native PopupWindow anchoring as Popup.qml; never grabs focus.
+PopupWindow {
   id: root
 
   Theme {
@@ -20,7 +18,7 @@ PanelWindow {
   property bool show: false
   property Item target: null
   property var panelWindow: null
-  property int gap: 4
+  property int gap: 3
 
   function showFor(item, txt) {
     root.target = item
@@ -33,8 +31,6 @@ PanelWindow {
   }
 
   color: "transparent"
-  exclusiveZone: 0
-  focusable: false
   implicitWidth: body.width
   implicitHeight: body.height
 
@@ -54,19 +50,32 @@ PanelWindow {
     }
   }
 
-  onVisibleChanged: if (root.visible) root.reposition()
-  onWidthChanged: if (root.visible) root.reposition()
-  onHeightChanged: if (root.visible) root.reposition()
-  onTargetChanged: if (root.visible) root.reposition()
-  onPanelWindowChanged: if (root.visible) root.reposition()
+  onVisibleChanged: if (root.visible) root.anchor.updateAnchor()
+  onTargetChanged: if (root.visible) root.anchor.updateAnchor()
+  onPanelWindowChanged: if (root.visible) root.anchor.updateAnchor()
 
-  function reposition() {
-    if (!root.target || !root.panelWindow) return
-    const scr = root.panelWindow.screen
-    if (!scr) return
-    const pos = root.target.mapToItem(root.panelWindow.contentItem, 0, root.target.height)
-    root.margins.left = Math.round(scr.x + pos.x + root.target.width / 2 - root.width / 2)
-    root.margins.top = Math.round(scr.y + pos.y + root.gap)
+  anchor {
+    window: root.panelWindow
+    edges: Edges.Bottom
+    gravity: Edges.Bottom
+    adjustment: PopupAdjustment.Slide
+    onAnchoring: {
+      if (!root.target || !root.panelWindow) return
+      const pos = root.target.mapToItem(root.panelWindow.contentItem, root.target.width / 2, root.target.height)
+      const scr = root.panelWindow.screen
+      let cx = pos.x
+      if (scr) {
+        cx = Math.max(
+          4 + root.width / 2,
+          Math.min(cx, scr.width - root.width / 2 - 4)
+        )
+      }
+      // gravity Bottom places the tooltip's top at the anchor rect's bottom edge.
+      anchor.rect.x = Math.round(cx - 1)
+      anchor.rect.y = Math.round(pos.y) + root.gap - 1
+      anchor.rect.width = 2
+      anchor.rect.height = 1
+    }
   }
 
   Surface {
@@ -74,13 +83,17 @@ PanelWindow {
     property int padX: 7
     property int padY: 3
 
-    width: textItem.implicitWidth + padX * 2
-    height: textItem.implicitHeight + padY * 2
+    width: textItem.implicitWidth + padX * 2 + shadowPad * 2
+    height: textItem.implicitHeight + padY * 2 + shadowPadTop + shadowPad
     radius: theme.tooltipRadius
     topColor: theme.tooltipBase
     bottomColor: theme.tooltipBase
     borderColor: theme.tooltipBorder
-    shadowEnabled: false
+    shadowEnabled: true
+    shadowBlur: 10
+    shadowOpacity: 0.35
+    shadowOffsetY: 1
+    shadowPadTop: 0
 
     content: Text {
       id: textItem

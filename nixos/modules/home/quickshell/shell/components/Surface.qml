@@ -54,6 +54,12 @@ Item {
 
   readonly property real _shadowMargin: root.shadowEnabled ? root.shadowBlur : 0
 
+  // Room the shadow needs around the material. Popups/menus should size their
+  // window to include these; the top pad can be reduced so an attached popup's
+  // card still hugs its anchor without the window overlapping the panel.
+  property real shadowPad: root._shadowMargin
+  property real shadowPadTop: root.shadowPad
+
   implicitWidth: 120
   implicitHeight: 40
 
@@ -75,8 +81,11 @@ Item {
   // Layered material body.
   Item {
     id: material
-    anchors.fill: parent
-    anchors.margins: root._shadowMargin
+    anchors {
+      fill: parent
+      margins: root.shadowPad
+      topMargin: root.shadowPadTop
+    }
 
     // Gradient body.
     Rectangle {

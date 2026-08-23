@@ -15,6 +15,7 @@ Item {
 
   required property var tooltip
   required property var panelWindow
+  required property var closeOthers
 
   implicitWidth: label.implicitWidth + 12
   implicitHeight: theme.controlSize
@@ -29,7 +30,10 @@ Item {
 
     onClicked: {
       if (volumePopup.visible) volumePopup.close()
-      else volumePopup.open()
+      else {
+        root.closeOthers()
+        volumePopup.open()
+      }
     }
   }
 
