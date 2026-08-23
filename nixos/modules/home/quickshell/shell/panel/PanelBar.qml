@@ -25,6 +25,7 @@ PanelWindow {
   required property var networkService
   required property var calendarModel
   required property var windowService
+  required property var popupController
 
   WlrLayershell.namespace: "late2000s-panel"
 
@@ -48,9 +49,7 @@ PanelWindow {
   }
 
   function closePopups() {
-    volumeWidget.closePopup()
-    networkWidget.closePopup()
-    clockWidget.closePopup()
+    root.popupController.closeAll()
   }
 
   // Classic desktop tooltip, shared by every control in the panel.
@@ -111,6 +110,7 @@ PanelWindow {
       panelWindow: root
       closeOthers: root.closePopups
       audioService: root.audioService
+      popupController: root.popupController
     }
 
     NetworkWidget {
@@ -118,6 +118,7 @@ PanelWindow {
       panelWindow: root
       closeOthers: root.closePopups
       networkService: root.networkService
+      popupController: root.popupController
     }
 
     ClockWidget {
@@ -125,6 +126,7 @@ PanelWindow {
       panelWindow: root
       closeOthers: root.closePopups
       calendarModel: root.calendarModel
+      popupController: root.popupController
     }
   }
 }

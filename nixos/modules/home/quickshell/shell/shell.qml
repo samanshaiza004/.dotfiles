@@ -3,6 +3,7 @@
 
 import Quickshell
 import QtQml
+import "components"
 import "panel"
 import "services"
 
@@ -33,11 +34,18 @@ ShellRoot {
     id: windowService
   }
 
+  PopupController {
+    id: popupController
+    panelWindow: panelBar
+  }
+
   PanelBar {
+    id: panelBar
     backend: backend
     audioService: audioService
     networkService: networkService
     calendarModel: calendarModel
     windowService: windowService
+    popupController: popupController
   }
 }

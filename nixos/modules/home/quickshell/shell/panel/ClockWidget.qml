@@ -15,6 +15,7 @@ Item {
   required property var panelWindow
   required property var closeOthers
   required property var calendarModel
+  required property var popupController
 
   implicitWidth: label.implicitWidth + 16
   implicitHeight: theme.controlSize
@@ -50,5 +51,6 @@ Item {
     target: button
     panelWindow: root.panelWindow
     calendarModel: root.calendarModel
+    popupController: root.popupController
   }
 }

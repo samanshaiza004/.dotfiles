@@ -17,6 +17,7 @@ Item {
   required property var panelWindow
   required property var closeOthers
   required property var networkService
+  required property var popupController
 
   implicitWidth: label.implicitWidth + 12
   implicitHeight: theme.controlSize
@@ -66,5 +67,6 @@ Item {
     target: button
     panelWindow: root.panelWindow
     networkService: root.networkService
+    popupController: root.popupController
   }
 }

@@ -27,6 +27,7 @@ PopupWindow {
   // anchors to (vertical authority + anchor surface).
   property Item target: null
   property var panelWindow: null
+  property var popupController: null
   property int gap: 2
   property int screenPadding: 6
 
@@ -37,10 +38,31 @@ PopupWindow {
 
   function open() {
     root.visible = true
+    if (root.popupController) root.popupController.open(root, root.dismissalRect)
   }
 
   function close() {
     root.visible = false
+    if (root.popupController) root.popupController.close(root)
+  }
+
+  readonly property rect dismissalRect: {
+    if (!root.target || !root.panelWindow) return Qt.rect(0, 0, 0, 0)
+    const pos = root.target.mapToItem(root.panelWindow.contentItem, root.target.width / 2, 0)
+    const scr = root.panelWindow.screen
+    let cx = pos.x
+    if (scr) {
+      cx = Math.max(
+        root.screenPadding + root.width / 2,
+        Math.min(cx, scr.width - root.width / 2 - root.screenPadding)
+      )
+    }
+    return Qt.rect(
+      Math.round(cx - root.width / 2),
+      Math.round(root.panelWindow.height + root.gap),
+      Math.round(root.width),
+      Math.round(root.height)
+    )
   }
 
   color: "transparent"
@@ -71,9 +93,30 @@ PopupWindow {
     }
   }
 
-  onVisibleChanged: if (root.visible) root.anchor.updateAnchor()
-  onTargetChanged: if (root.visible) root.anchor.updateAnchor()
-  onPanelWindowChanged: if (root.visible) root.anchor.updateAnchor()
+  function updateDismissalRect() {
+    if (root.visible && root.popupController) {
+      root.popupController.update(root, root.dismissalRect)
+    }
+  }
+
+  onVisibleChanged: {
+    if (root.visible) {
+      root.anchor.updateAnchor()
+      Qt.callLater(root.updateDismissalRect)
+    } else if (root.popupController) {
+      root.popupController.close(root)
+    }
+  }
+  onTargetChanged: if (root.visible) {
+    root.anchor.updateAnchor()
+    root.updateDismissalRect()
+  }
+  onPanelWindowChanged: if (root.visible) {
+    root.anchor.updateAnchor()
+    root.updateDismissalRect()
+  }
+  onWidthChanged: root.updateDismissalRect()
+  onHeightChanged: root.updateDismissalRect()
 
   Surface {
     id: body
