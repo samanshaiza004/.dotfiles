@@ -268,6 +268,8 @@ PanelWindow {
     shadowOpacity: 0.82
     shadowPadTop: 0
     transformOrigin: Item.TopLeft
+    topColor: theme.startSurfaceGradTop
+    bottomColor: theme.surfaceGradBottom
 
     content: ColumnLayout {
       anchors.fill: parent
@@ -294,7 +296,7 @@ PanelWindow {
         }
 
         Text {
-          color: theme.textMuted
+          color: theme.textSecondary
           font.pixelSize: theme.textSize
           text: root.appCatalog.results.length + " results"
         }

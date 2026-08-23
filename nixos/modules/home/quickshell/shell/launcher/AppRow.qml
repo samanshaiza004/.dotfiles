@@ -62,7 +62,7 @@ Item {
         Text {
           visible: root.entry.genericName !== ""
           width: parent.width
-          color: theme.textMuted
+          color: root.selected ? theme.textOnActiveSecondary : theme.textMuted
           elide: Text.ElideRight
           font.pixelSize: theme.textSize
           text: root.entry.genericName

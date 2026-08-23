@@ -25,12 +25,22 @@ QtObject {
     return Qt.rgba(color.r, color.g, color.b, opacity)
   }
 
+  function mix(first, second, amount) {
+    return Qt.rgba(
+      first.r * (1 - amount) + second.r * amount,
+      first.g * (1 - amount) + second.g * amount,
+      first.b * (1 - amount) + second.b * amount,
+      1
+    )
+  }
+
   // ---- Text -----------------------------------------------------------
   readonly property color textPrimary: "#E9E6DF"
   readonly property color textSecondary: "#B8B3A9"
   readonly property color textMuted: "#8A857B"
   readonly property color textFaint: "#66615A"
   readonly property color textOnActive: "#EFF4F9"
+  readonly property color textOnActiveSecondary: root.alpha(textOnActive, 0.70)
   readonly property color textOnUrgent: "#F2B49C"
   readonly property color textOnTrack: "#DCE4EC"
   readonly property color calendarWeekday: "#C9CBC9"
@@ -43,19 +53,26 @@ QtObject {
   readonly property color steel: "#33343A"
   readonly property color steelLight: "#3D3F46"
 
-  // ---- Muted blue-gray accent (active/focused) -------------------------
-  readonly property color accent: Services.ColorService.primary
-  readonly property color accentBright: Services.ColorService.primaryFixed
-  readonly property color accentDeep: Services.ColorService.primaryContainer
-  readonly property color accentDim: Services.ColorService.secondaryContainer
+  // ---- Fixed Oxygen selection semantics --------------------------------
+  readonly property color accent: "#6E93C4"
+  readonly property color accentBright: "#9CB7DB"
+  readonly property color accentDeep: "#33506E"
+  readonly property color accentDim: "#42536B"
+
+  // Wallpaper colorization is intentionally separate from selection/control
+  // semantics. It may tint glass and soften the focus glow, but never replaces
+  // the fixed Oxygen blue used for selected controls.
+  readonly property color colorization: Services.ColorService.primary
+  readonly property color colorizationTint: root.alpha(colorization, 0.08)
+  readonly property color focusGlow: root.mix(accent, colorization, 0.25)
 
   // ---- Urgent ----------------------------------------------------------
-  readonly property color urgent: Services.ColorService.error
-  readonly property color urgentBright: Services.ColorService.error
-  readonly property color urgentDeep: Services.ColorService.errorContainer
+  readonly property color urgent: "#C05B3C"
+  readonly property color urgentBright: "#E07A55"
+  readonly property color urgentDeep: "#3A2018"
 
   // ---- Panel glass ------------------------------------------------------
-  readonly property color panelGradTop: root.alpha(Services.ColorService.primary, 0.12)
+  readonly property color panelGradTop: colorizationTint
   readonly property color panelGradBottom: "#D9151619"
   readonly property color panelTopHighlight: "#2EFFFFFF"
   readonly property color panelBottomEdge: "#FF0A0A0C"
@@ -68,6 +85,7 @@ QtObject {
   readonly property color surfaceTopHighlight: "#38FFFFFF"
   readonly property color surfaceBottomShadow: "#3A000000"
   readonly property color surfaceShadow: "#000000"
+  readonly property color startSurfaceGradTop: root.alpha(colorization, 0.08)
 
   // ---- Light variant ------------------------------------------------------
   readonly property color lightSurfaceGradTop: "#F4ECECEF"
@@ -94,20 +112,20 @@ QtObject {
   readonly property color buttonPressedTopHighlight: "#0DFFFFFF"
   readonly property color buttonPressedBottomShadow: "#4D000000"
 
-  readonly property color buttonActiveGradTop: root.alpha(Services.ColorService.primary, 0.9)
-  readonly property color buttonActiveGradBottom: root.alpha(Services.ColorService.primaryContainer, 0.9)
+  readonly property color buttonActiveGradTop: "#E65A6E8A"
+  readonly property color buttonActiveGradBottom: "#E8364460"
   readonly property color buttonActiveBorder: "#FF0A0A0C"
   readonly property color buttonActiveTopHighlight: "#4AFFFFFF"
   readonly property color buttonActiveBottomShadow: "#30000000"
-  readonly property color buttonActiveInnerEdge: root.alpha(Services.ColorService.primaryFixed, 0.7)
-  readonly property color buttonActiveGlow: Services.ColorService.primary
+  readonly property color buttonActiveInnerEdge: "#B49CB7DB"
+  readonly property color buttonActiveGlow: focusGlow
 
-  readonly property color buttonUrgentGradTop: root.alpha(Services.ColorService.error, 0.9)
-  readonly property color buttonUrgentGradBottom: root.alpha(Services.ColorService.errorContainer, 0.9)
+  readonly property color buttonUrgentGradTop: "#E65A362A"
+  readonly property color buttonUrgentGradBottom: "#E8392118"
   readonly property color buttonUrgentBorder: "#FF0A0A0C"
   readonly property color buttonUrgentTopHighlight: "#4AF2B49C"
-  readonly property color buttonUrgentInnerEdge: root.alpha(Services.ColorService.error, 0.7)
-  readonly property color buttonUrgentGlow: Services.ColorService.error
+  readonly property color buttonUrgentInnerEdge: "#B4E07A55"
+  readonly property color buttonUrgentGlow: "#C05B3C"
 
   readonly property color buttonDisabledGradTop: "#A61E1F23"
   readonly property color buttonDisabledGradBottom: "#A618191C"
@@ -118,11 +136,11 @@ QtObject {
   readonly property color trackBorder: "#FF070708"
   readonly property color trackTopShadow: "#40000000"
   readonly property color trackInnerTop: "#14FFFFFF"
-  readonly property color fillGradTop: root.alpha(Services.ColorService.primary, 0.94)
-  readonly property color fillGradBottom: root.alpha(Services.ColorService.primaryContainer, 0.94)
+  readonly property color fillGradTop: "#F08FB4D9"
+  readonly property color fillGradBottom: "#E84A7095"
   readonly property color fillTopHighlight: "#5CFFFFFF"
-  readonly property color fillLeadingEdge: Services.ColorService.primaryFixed
-  readonly property color fillGlow: Services.ColorService.primary
+  readonly property color fillLeadingEdge: "#FFC7D9EC"
+  readonly property color fillGlow: accent
 
   // ---- Tooltip -----------------------------------------------------------
   readonly property color tooltipBase: "#F4F1EB"
