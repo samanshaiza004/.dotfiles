@@ -75,7 +75,9 @@ Item {
       width: 18
       height: 18
       anchors.verticalCenter: parent.verticalCenter
-      source: Quickshell.iconPath(root.service.deviceIcon(root.device), "bluetooth")
+      source: Quickshell.iconPath(
+        root.service.deviceIcon(root.device), "preferences-system-bluetooth"
+      )
       asynchronous: true
       opacity: root.busy ? 0.6 : 1
     }

@@ -19,52 +19,78 @@ Item {
   readonly property bool discoveryOwned: root.requestedDiscovery
   readonly property bool menuOpen: root._menuOpen
 
-  property int modelRevision: 0
+  // Only membership/order changes invalidate the filtered views. Device state
+  // and battery properties stay bound directly by each row.
+  property int membershipRevision: 0
   property bool requestedDiscovery: false
   property var discoveryAdapter: null
   property bool _menuOpen: false
 
-  readonly property var allDevices: {
-    const revision = root.modelRevision
-    void revision
-    return Bluetooth.devices ? Bluetooth.devices.values : []
+  // Use the native ObjectModel from the current default adapter. Its values
+  // notify when devices are added or removed, while the device objects retain
+  // identity across ordinary property changes.
+  readonly property var devices: root.adapter ? root.adapter.devices : null
+
+  ScriptModel {
+    id: connectedModel
+    comparisonMode: ObjectComparison.Identity
+
+    values: {
+      const revision = root.membershipRevision
+      void revision
+      const model = root.devices
+      if (!model) return []
+      return root.sortedDevices(model.values.filter(device => device.connected))
+    }
   }
 
-  // Use Quickshell's current default adapter for Phase A. Device objects from
-  // other adapters remain tracked by BlueZ but do not leak into this menu.
-  readonly property var devices: {
-    const revision = root.modelRevision
-    void revision
-    const current = root.adapter
-    if (!current) return []
-    return root.allDevices.filter(device => {
-      if (!device) return false
-      return device.adapter === current
-    })
+  ScriptModel {
+    id: pairedModel
+    comparisonMode: ObjectComparison.Identity
+
+    values: {
+      const revision = root.membershipRevision
+      void revision
+      const model = root.devices
+      if (!model) return []
+      return root.sortedDevices(model.values.filter(device => {
+        return !device.connected && root.isPaired(device)
+      }))
+    }
   }
 
-  readonly property var connectedDevices: root.sortedDevices(
-    root.devices.filter(device => device.connected)
-  )
+  ScriptModel {
+    id: availableModel
+    comparisonMode: ObjectComparison.Identity
 
-  readonly property var pairedDevices: root.sortedDevices(
-    root.devices.filter(device => !device.connected && root.isPaired(device))
-  )
+    values: {
+      const revision = root.membershipRevision
+      void revision
+      const model = root.devices
+      if (!model) return []
+      return root.sortedDevices(model.values.filter(device => {
+        if (device.connected || root.isPaired(device) || device.blocked) return false
+        return !root.isAddressOnly(device)
+      }))
+    }
+  }
 
-  readonly property var availableDevices: root.sortedDevices(
-    root.devices.filter(device => {
-      if (device.connected || root.isPaired(device) || device.blocked) return false
-      return !root.isAddressOnly(device)
-    })
-  )
+  readonly property var connectedDevices: connectedModel
+  readonly property var pairedDevices: pairedModel
+  readonly property var availableDevices: availableModel
+  readonly property int connectedCount: connectedModel.values.length
+  readonly property int pairedCount: pairedModel.values.length
+  readonly property int availableCount: availableModel.values.length
+  readonly property string connectedNames: connectedModel.values
+    .map(device => root.displayName(device)).join(", ")
 
   readonly property string statusText: {
     if (!root.available) return "No Bluetooth adapter"
     if (!root.enabled) return "Bluetooth off"
-    if (root.connectedDevices.length === 0) return "Bluetooth ready"
-    return root.connectedDevices.length === 1
-      ? root.displayName(root.connectedDevices[0])
-      : root.connectedDevices.length + " devices connected"
+    if (root.connectedCount === 0) return "Bluetooth ready"
+    return root.connectedCount === 1
+      ? root.connectedNames
+      : root.connectedCount + " devices connected"
   }
 
   Timer {
@@ -80,30 +106,12 @@ Item {
     target: Bluetooth
 
     function onDefaultAdapterChanged() {
-      root.modelRevision++
       root.handleAdapterAvailability()
-    }
-  }
-
-  Connections {
-    target: Bluetooth.adapters
-
-    function onValuesChanged() {
-      root.modelRevision++
-      root.handleAdapterAvailability()
-    }
-  }
-
-  Connections {
-    target: Bluetooth.devices
-
-    function onValuesChanged() {
-      root.modelRevision++
     }
   }
 
   Instantiator {
-    model: Bluetooth.devices
+    model: root.devices
 
     delegate: Item {
       required property var modelData
@@ -112,17 +120,14 @@ Item {
         target: modelData
         ignoreUnknownSignals: true
 
-        function onAddressChanged() { root.modelRevision++ }
-        function onNameChanged() { root.modelRevision++ }
-        function onDeviceNameChanged() { root.modelRevision++ }
-        function onConnectedChanged() { root.modelRevision++ }
-        function onPairedChanged() { root.modelRevision++ }
-        function onBondedChanged() { root.modelRevision++ }
-        function onPairingChanged() { root.modelRevision++ }
-        function onBatteryAvailableChanged() { root.modelRevision++ }
-        function onBatteryChanged() { root.modelRevision++ }
-        function onStateChanged() { root.modelRevision++ }
-        function onAdapterChanged() { root.modelRevision++ }
+        function onNameChanged() { root.membershipRevision++ }
+        function onDeviceNameChanged() { root.membershipRevision++ }
+        function onConnectedChanged() { root.membershipRevision++ }
+        function onPairedChanged() { root.membershipRevision++ }
+        function onBondedChanged() { root.membershipRevision++ }
+        function onTrustedChanged() { root.membershipRevision++ }
+        function onBlockedChanged() { root.membershipRevision++ }
+        function onAdapterChanged() { root.membershipRevision++ }
       }
     }
   }
@@ -137,7 +142,6 @@ Item {
     }
 
     function onDiscoveringChanged() {
-      root.modelRevision++
       // BlueZ may emit its signal before the bindable property has settled.
       // Reconcile on the next turn so our own start is not mistaken for an
       // external stop.
@@ -145,7 +149,6 @@ Item {
     }
 
     function onStateChanged() {
-      root.modelRevision++
       if (!root.enabled) root.stopDiscovery()
     }
   }
@@ -267,7 +270,7 @@ Item {
   }
 
   function deviceIcon(device) {
-    return device && device.icon ? device.icon : "bluetooth"
+    return device && device.icon ? device.icon : "preferences-system-bluetooth"
   }
 
   function deviceType(device) {

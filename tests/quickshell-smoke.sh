@@ -24,6 +24,10 @@ rg -q 'BluetoothService' "$config/shell.qml"
 rg -q 'BluetoothWidget|bluetoothService' "$config/panel/PanelBar.qml"
 rg -q 'BluetoothMenu|popupController' "$config/panel/BluetoothWidget.qml"
 rg -q 'discoveryTimer|requestedDiscovery|closeMenu' "$config/services/BluetoothService.qml"
+rg -q 'ScriptModel|ObjectComparison\.Identity|membershipRevision' "$config/services/BluetoothService.qml"
+rg -q 'onTrustedChanged|onBlockedChanged' "$config/services/BluetoothService.qml"
+! rg -q 'onBatteryChanged|onPairingChanged' "$config/services/BluetoothService.qml"
+rg -q 'model: root\.bluetoothService\.(connectedDevices|pairedDevices|availableDevices)' "$config/menus/BluetoothMenu.qml"
 rg -q 'qs ipc call launcher toggle' "$repo_root/nixos/modules/home/mango.nix"
 
 set +e

@@ -37,7 +37,9 @@ Popup {
         width: 18
         height: 18
         anchors.verticalCenter: parent.verticalCenter
-        source: Quickshell.iconPath("bluetooth", "preferences-system-bluetooth")
+        source: Quickshell.iconPath(
+          "preferences-system-bluetooth", "preferences-system-bluetooth-inactive"
+        )
         opacity: root.bluetoothService.available ? 1 : 0.45
       }
 
@@ -122,7 +124,7 @@ Popup {
 
         SectionHeader {
           width: parent.width
-          visible: root.bluetoothService.connectedDevices.length > 0
+          visible: root.bluetoothService.connectedCount > 0
           label: "Connected"
           topLine: false
         }
@@ -142,9 +144,9 @@ Popup {
 
         SectionHeader {
           width: parent.width
-          visible: root.bluetoothService.pairedDevices.length > 0
+          visible: root.bluetoothService.pairedCount > 0
           label: "Paired"
-          topLine: root.bluetoothService.connectedDevices.length > 0
+          topLine: root.bluetoothService.connectedCount > 0
         }
 
         Repeater {
@@ -163,10 +165,10 @@ Popup {
         SectionHeader {
           width: parent.width
           visible: root.bluetoothService.enabled
-            && root.bluetoothService.availableDevices.length > 0
+            && root.bluetoothService.availableCount > 0
           label: "Available"
-          topLine: root.bluetoothService.connectedDevices.length > 0
-            || root.bluetoothService.pairedDevices.length > 0
+          topLine: root.bluetoothService.connectedCount > 0
+            || root.bluetoothService.pairedCount > 0
         }
 
         Repeater {
@@ -184,9 +186,9 @@ Popup {
 
         Text {
           visible: root.bluetoothService.enabled
-            && root.bluetoothService.connectedDevices.length === 0
-            && root.bluetoothService.pairedDevices.length === 0
-            && root.bluetoothService.availableDevices.length === 0
+            && root.bluetoothService.connectedCount === 0
+            && root.bluetoothService.pairedCount === 0
+            && root.bluetoothService.availableCount === 0
           width: parent.width
           color: theme.textMuted
           font.pixelSize: theme.textSize

@@ -18,15 +18,14 @@ Item {
   required property var closeOthers
   required property var popupController
 
-  implicitWidth: theme.controlSize + (root.bluetoothService.connectedDevices.length > 0 ? 12 : 0)
+  implicitWidth: theme.controlSize + (root.bluetoothService.connectedCount > 0 ? 12 : 0)
   implicitHeight: theme.controlSize
 
   readonly property string tooltipText: {
     if (!root.bluetoothService.available) return "Bluetooth: no adapter"
     if (!root.bluetoothService.enabled) return "Bluetooth: off"
-    const devices = root.bluetoothService.connectedDevices
-    if (devices.length === 0) return "Bluetooth: no connected devices"
-    return "Bluetooth: " + devices.map(device => root.bluetoothService.displayName(device)).join(", ")
+    if (root.bluetoothService.connectedCount === 0) return "Bluetooth: no connected devices"
+    return "Bluetooth: " + root.bluetoothService.connectedNames
   }
 
   function closePopup() {
@@ -36,7 +35,7 @@ Item {
   ButtonFrame {
     id: button
     anchors.fill: parent
-    checked: root.bluetoothService.enabled && root.bluetoothService.connectedDevices.length > 0
+    checked: root.bluetoothService.enabled && root.bluetoothService.connectedCount > 0
     enabled: true
 
     onHoveredChanged: {
@@ -61,17 +60,19 @@ Item {
         width: 14
         height: 14
         anchors.verticalCenter: parent.verticalCenter
-        source: Quickshell.iconPath("bluetooth", "preferences-system-bluetooth")
+        source: Quickshell.iconPath(
+          "preferences-system-bluetooth", "preferences-system-bluetooth-inactive"
+        )
         asynchronous: true
         opacity: !root.bluetoothService.available || !root.bluetoothService.enabled ? 0.48 : 1
       }
 
       Text {
-        visible: root.bluetoothService.connectedDevices.length > 0
+        visible: root.bluetoothService.connectedCount > 0
         anchors.verticalCenter: parent.verticalCenter
         color: root.bluetoothService.enabled ? theme.textSecondary : theme.textMuted
         font.pixelSize: theme.textSize
-        text: root.bluetoothService.connectedDevices.length
+        text: root.bluetoothService.connectedCount
       }
     }
   }
