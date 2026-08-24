@@ -12,6 +12,7 @@
       ../../modules/nixos/mango.nix
       ../../modules/nixos/home-manager.nix
       ../../modules/nixos/networking.nix
+      ../../modules/nixos/bluetooth.nix
       ../../modules/nixos/sddm.nix
     ];
   # Bootloader.

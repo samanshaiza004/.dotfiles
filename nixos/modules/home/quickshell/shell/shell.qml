@@ -27,6 +27,10 @@ ShellRoot {
     id: networkService
   }
 
+  BluetoothService {
+    id: bluetoothService
+  }
+
   CalendarModel {
     id: calendarModel
   }
@@ -57,6 +61,7 @@ ShellRoot {
     backend: backend
     audioService: audioService
     networkService: networkService
+    bluetoothService: bluetoothService
     calendarModel: calendarModel
     windowService: windowService
     popupController: popupController

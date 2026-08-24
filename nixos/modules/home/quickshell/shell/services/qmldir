@@ -1,6 +1,7 @@
 singleton ColorService 1.0 ColorService.qml
 AppCatalog 1.0 AppCatalog.qml
 AudioService 1.0 AudioService.qml
+BluetoothService 1.0 BluetoothService.qml
 CalendarModel 1.0 CalendarModel.qml
 NetworkService 1.0 NetworkService.qml
 WindowService 1.0 WindowService.qml

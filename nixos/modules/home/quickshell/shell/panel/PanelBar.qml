@@ -23,6 +23,7 @@ PanelWindow {
   required property var backend
   required property var audioService
   required property var networkService
+  required property var bluetoothService
   required property var calendarModel
   required property var windowService
   required property var popupController
@@ -112,6 +113,15 @@ PanelWindow {
 
     TrayWidget {
       tooltip: tooltip
+    }
+
+    BluetoothWidget {
+      id: bluetoothWidget
+      bluetoothService: root.bluetoothService
+      tooltip: tooltip
+      panelWindow: root
+      closeOthers: root.closePopups
+      popupController: root.popupController
     }
 
     VolumeWidget {

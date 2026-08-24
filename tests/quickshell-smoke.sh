@@ -18,6 +18,12 @@ rg -q 'ScriptModel|objectProp: "id"' "$config/launcher/AppList.qml"
 rg -q 'AppSearch\.rank' "$config/services/AppCatalog.qml"
 rg -q 'FileView|watchChanges|JsonAdapter' "$config/services/ColorService.qml"
 rg -q 'ColorService' "$config/style/Theme.qml"
+rg -q 'Quickshell\.Bluetooth|Bluetooth\.defaultAdapter|beginDiscovery|stopDiscovery' "$config/services/BluetoothService.qml"
+rg -q 'BluetoothService 1\.0 BluetoothService\.qml' "$config/services/qmldir"
+rg -q 'BluetoothService' "$config/shell.qml"
+rg -q 'BluetoothWidget|bluetoothService' "$config/panel/PanelBar.qml"
+rg -q 'BluetoothMenu|popupController' "$config/panel/BluetoothWidget.qml"
+rg -q 'discoveryTimer|requestedDiscovery|closeMenu' "$config/services/BluetoothService.qml"
 rg -q 'qs ipc call launcher toggle' "$repo_root/nixos/modules/home/mango.nix"
 
 set +e
